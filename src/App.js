@@ -6,10 +6,10 @@ import Modal from "./components/modal/Index"
 import NotAuth from "./pages/home/Index"
 import IsAuth from "./pages/question/Index"
 import Stars from "./components/stars/Index"
-import { play, stop } from "./util/generateMusic"
+import Music from "./components/music-player/Index"
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 
 
 const App = () => {
@@ -30,7 +30,6 @@ const App = () => {
   }
   const authentication = () => {
     if (!sessionStorage.getItem('auth')) return
-    stop()
     setIsLoggind(true)
   }
   const funcSetModalActive = () => {
@@ -39,7 +38,6 @@ const App = () => {
   useEffect(() => {
     let ignore = false;
     if (!ignore) {
-      play()
       authentication();
     }
     return () => { ignore = true; }
@@ -47,6 +45,7 @@ const App = () => {
   return (
     <div>
       <Stars />
+      <Music audio="holiday-is-coming-11852.mp3" />
       <div className="App">
         <Modal show={modalActive} handleClose={() => setModalActive(false)} handleSubmit={afterAuth} />
         {loading ? <Loading /> : ''}
@@ -67,3 +66,4 @@ const App = () => {
 }
 
 export default App;
+

@@ -1,14 +1,9 @@
-import music from "../audio/holiday-is-coming-11852.mp3"
+import music from "../audio/zapsplat_multimedia_cell_phone_smart_screen_button_press_click_feedback_003_60932.mp3"
 
 let audio
 
 export function play() {
-    audio = document.createElement("AUDIO")
-    document.body.appendChild(audio);
-    audio.src = music
-    document.body.addEventListener("mousemove", function () {
-        audio.play()
-    })
+    new Audio(music).play();
 }
 
 export function stop() {
