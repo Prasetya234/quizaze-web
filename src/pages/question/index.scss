@@ -1,0 +1,38 @@
+.box {
+    width: 60%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: -20px;
+    &-question {
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+    }
+    &-content {
+        margin-top: 20px;
+        width: 80%;
+        display: flex;
+        flex-wrap: wrap;
+        &-answer {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            p {
+                cursor: pointer;
+                padding: 10px 15px;
+                border-radius: 16px;
+                width: 80%;
+                font-size: 15px;
+                color: white;
+                background-color: black;
+                font-weight: bold;
+
+                &:hover {
+                    background-color: white;
+                    color: black;
+                }
+            }
+        }
+    }
+}

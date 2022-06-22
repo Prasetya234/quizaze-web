@@ -1,0 +1,4 @@
+flow: 
+    - input 
+    - show question
+    - all question submited done, show home page before login
