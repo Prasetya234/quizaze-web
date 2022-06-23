@@ -1,10 +1,9 @@
-import { useEffect } from "react";
-import { React, useState, useRef } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
 import music from "../../audio/holiday-is-coming-11852.mp3"
 
-export default ({ played }) => {
+const Index = ({ played }) => {
     const audioEl = useRef(null);
-    let audioPlayer;
+    let audioPlayer, timeOut;
     const [isLoaded, setIsLoaded] = useState(false);
     const [isPlayed, setIsPlayed] = useState(false);
     const initializPlayer = () => {
@@ -23,9 +22,25 @@ export default ({ played }) => {
     const stopOpPlay = async () => {
         if (played) {
             await audioPlayer.play()
+            progress()
         } else {
             await audioPlayer.pause()
+            clearInterval(timeOut)
+            console.log("stop");
         }
+    }
+    const progress = () => {
+        timeOut = setInterval(() => {
+            let end = audioPlayer.duration;
+            let current = audioPlayer.currentTime;
+            if (current == end) {
+                console.log("end");
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                stopOpPlay()
+            }
+            console.log(`Current : ${current}`);
+        }, 1000);
     }
     useEffect(() => {
         initializPlayer()
@@ -42,3 +57,5 @@ export default ({ played }) => {
         >Your browser does not support the audio element.</audio>
     )
 }
+
+export default Index;

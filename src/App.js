@@ -4,7 +4,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Loading from "./components/loading/Index"
 import Modal from "./components/modal/Index"
 import Home from "./pages/home/Index"
-import IsAuth from "./pages/question/Index"
 import Stars from "./components/stars/Index"
 
 
@@ -52,9 +51,10 @@ const App = () => {
         <header className="App-header">
           <Router>
             <Switch>
-              <Route exact path="/">
+              <Route exact path={["/", "/home"]}>
                 <Home funcSetModal={funcSetModalActive} />
               </Route>
+              <Route>Page not found</Route>
             </Switch>
           </Router>
 

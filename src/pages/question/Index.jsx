@@ -8,7 +8,7 @@ const Index = () => {
     useEffect(() => {
         let ignore = false;
         if (!ignore) {
-            const res = animals()
+            animals()
         }
         return () => { ignore = true; }
     }, []);

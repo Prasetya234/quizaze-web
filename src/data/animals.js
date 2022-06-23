@@ -23,7 +23,7 @@ const animals = [
 
 const shuffle = (array, array1) => {
     let currentIndex = array.length, randomIndex;
-    while (currentIndex != 0) {
+    while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
         [array[currentIndex], array[randomIndex]] = [
@@ -35,13 +35,12 @@ const shuffle = (array, array1) => {
 const funtRandom = (data) => {
     let loop = true
     const res = [];
-    const finaly = []
     const length = animals.length
     res.push(animals[Math.floor(Math.random() * length)])
     while (loop) {
         const response = animals[Math.floor(Math.random() * length)]
         res.forEach(e => {
-            if (e.name != response.name) res.push(response)
+            if (e.name !== response.name) res.push(response)
         });
         if (res.length > 3) loop = false
     }

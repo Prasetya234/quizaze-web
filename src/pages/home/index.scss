@@ -5,13 +5,7 @@
     font-size: 50px;
     font-weight: bold;
     margin-bottom: 20px;
-    background-image: linear-gradient(
-      -225deg,
-      #231557 0%,
-      #44107a 29%,
-      #ff1361 67%,
-      #fff800 100%
-    );
+    background-image: linear-gradient(-225deg, #231557 0%, #44107a 29%, #ff1361 67%, #fff800 100%);
     background-size: auto auto;
     background-clip: border-box;
     background-size: 200% auto;
@@ -49,7 +43,7 @@
     transition: all 0.3s ease-in-out;
   }
   p:before {
-    content: "";
+    content: '';
     background: #54b3d6;
     display: block;
     position: absolute;
@@ -70,12 +64,14 @@
 
 .header {
   display: flex;
+
   justify-content: space-between;
   position: absolute;
   width: 90%;
   top: 40px;
 }
 .profile {
+  cursor: pointer;
   width: 40px;
   border-radius: 50%;
   &:hover {
