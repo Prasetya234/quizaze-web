@@ -19,4 +19,4 @@ const connectSlice = createSlice({
 })
 
 export const { post } = connectSlice.actions;
-export default connectSlice;
+export default connectSlice.reducer;

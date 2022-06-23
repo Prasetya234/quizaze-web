@@ -3,10 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Loading from "./components/loading/Index"
 import Modal from "./components/modal/Index"
-import NotAuth from "./pages/home/Index"
+import Home from "./pages/home/Index"
 import IsAuth from "./pages/question/Index"
 import Stars from "./components/stars/Index"
-import Music from "./components/music-player/Index"
+
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { React, useEffect, useState } from 'react';
@@ -45,7 +45,7 @@ const App = () => {
   return (
     <div>
       <Stars />
-      <Music audio="holiday-is-coming-11852.mp3" />
+
       <div className="App">
         <Modal show={modalActive} handleClose={() => setModalActive(false)} handleSubmit={afterAuth} />
         {loading ? <Loading /> : ''}
@@ -53,7 +53,7 @@ const App = () => {
           <Router>
             <Switch>
               <Route exact path="/">
-                <NotAuth funcSetModal={funcSetModalActive} />
+                <Home funcSetModal={funcSetModalActive} />
               </Route>
             </Switch>
           </Router>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { React, useState, useRef } from "react"
 import music from "../../audio/holiday-is-coming-11852.mp3"
 
-export default ({ audio }) => {
+export default ({ played }) => {
     const audioEl = useRef(null);
     let audioPlayer;
     const [isLoaded, setIsLoaded] = useState(false);
@@ -18,15 +18,18 @@ export default ({ audio }) => {
         audioPlayer.addEventListener("pause", () => {
             setIsPlayed(false);
         });
-        console.log(document.getElementById('music').currentTime);
         stopOpPlay()
     }
-    const stopOpPlay = () => {
-        isPlayed ? audioPlayer.pause() : audioPlayer.play()
+    const stopOpPlay = async () => {
+        if (played) {
+            await audioPlayer.play()
+        } else {
+            await audioPlayer.pause()
+        }
     }
     useEffect(() => {
         initializPlayer()
-    }, [audio])
+    }, [played])
     return (
         <audio
             id="music"

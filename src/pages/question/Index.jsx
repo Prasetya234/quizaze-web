@@ -9,7 +9,6 @@ const Index = () => {
         let ignore = false;
         if (!ignore) {
             const res = animals()
-            console.log(res);
         }
         return () => { ignore = true; }
     }, []);
