@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import Button from "../../components/button/Index"
 import { imageCharacter } from "../../util/generateImage"
 import Music from "../../components/music-player/Index"
@@ -9,26 +10,23 @@ import { playm } from "../../app/feature/soundSlice"
 import "./index.scss"
 
 const Index = ({ funcSetModal }) => {
-  const { isPlayed } = useSelector((state) => state.sound)
-  const [user, setUser] = useState({ avatar: "", username: "" })
   const dispatch = useDispatch()
+  const { isPlayed } = useSelector((state) => state.sound)
+  const { profile } = useSelector(state => state.connect)
+
+
   const wa = () => {
     play()
     window.open("https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%20menyenagkan")
-
   }
   const aktivSuara = () => {
     play()
     dispatch(playm({ play: !isPlayed }))
   }
-
-  useEffect(() => {
-    const resp = JSON.parse(localStorage.getItem('auth'))
-    if (resp) setUser(resp.user)
-  }, [])
   return (
     <div style={{ width: '100%', display: "flex", justifyContent: 'center' }} id="music">
       <Music played={isPlayed} />
+
       <div className="header" >
         <div style={{ cursor: "pointer" }} onClick={aktivSuara}>
           {
@@ -45,7 +43,16 @@ const Index = ({ funcSetModal }) => {
           }
         </div>
         <div>
-          <img src={imageCharacter(user.username)} alt="Profile" className="profile" title="Profile" />
+          <OverlayTrigger
+            placement="left"
+            overlay={
+              <Tooltip id="tooltipleft">
+                Profile {profile.username}
+              </Tooltip>
+            }
+          >
+            <img src={imageCharacter(profile.username)} alt="Profile" className="profile" />
+          </OverlayTrigger>
         </div>
       </div>
       <div className='App-content'>

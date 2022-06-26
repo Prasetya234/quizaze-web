@@ -22,5 +22,5 @@ const connectSlice = createSlice({
     }
 })
 
-export const { getProfile, setLoading } = connectSlice.actions
+export const { setProfile, setLoading } = connectSlice.actions
 export default connectSlice.reducer;
