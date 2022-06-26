@@ -1,5 +1,6 @@
-const BASE_PATH_V1 = process.env.APP_BASE_URL_V1
+const BASE_PATH_V1 = process.env.REACT_APP_BASE_URL_V1
 // const BASE_PATH_V2 = process.env.APP_BASE_URL_V2
+console.log(BASE_PATH_V1);
 
 const api = {
     admin: `${BASE_PATH_V1}/api/admin`,
@@ -39,8 +40,8 @@ const serializeQueryParams = (paramObj) => {
 
 const request = {
     api: api,
-    getAuthHeader: getAuthHeader(),
-    serializeQueryParams: serializeQueryParams()
+    getAuthHeader,
+    serializeQueryParams
 }
 
 export default request;

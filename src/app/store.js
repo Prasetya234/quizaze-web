@@ -4,7 +4,7 @@ import soundReducer from "./feature/soundSlice"
 
 const reducer = {
     connect: connectReducer,
-    sound: soundReducer
+    sound: soundReducer,
 }
 
 const store = configureStore({

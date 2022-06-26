@@ -1,6 +1,6 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import Button from "../../components/button/Index"
-import guest from "../../assets/character/G.png"
+import { imageCharacter } from "../../util/generateImage"
 import Music from "../../components/music-player/Index"
 import { play } from "../../util/generateMusic"
 import { useSelector, useDispatch } from "react-redux"
@@ -10,14 +10,22 @@ import "./index.scss"
 
 const Index = ({ funcSetModal }) => {
   const { isPlayed } = useSelector((state) => state.sound)
+  const [user, setUser] = useState({ avatar: "", username: "" })
   const dispatch = useDispatch()
   const wa = () => {
-    window.open("https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%20menyenagkan")
     play()
+    window.open("https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%20menyenagkan")
+
   }
   const aktivSuara = () => {
+    play()
     dispatch(playm({ play: !isPlayed }))
   }
+
+  useEffect(() => {
+    const resp = JSON.parse(localStorage.getItem('auth'))
+    if (resp) setUser(resp.user)
+  }, [])
   return (
     <div style={{ width: '100%', display: "flex", justifyContent: 'center' }} id="music">
       <Music played={isPlayed} />
@@ -37,7 +45,7 @@ const Index = ({ funcSetModal }) => {
           }
         </div>
         <div>
-          <img src={guest} alt="Profile" className="profile" title="Profile" />
+          <img src={imageCharacter(user.username)} alt="Profile" className="profile" title="Profile" />
         </div>
       </div>
       <div className='App-content'>

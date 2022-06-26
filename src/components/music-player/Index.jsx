@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from "react"
-import music from "../../audio/holiday-is-coming-11852.mp3"
+import React, { useState, useRef, useEffect } from "react"
+import music from "../../assets/audio/holiday-is-coming-11852.mp3"
 
 const Index = ({ played }) => {
     const audioEl = useRef(null);
@@ -26,20 +26,17 @@ const Index = ({ played }) => {
         } else {
             await audioPlayer.pause()
             clearInterval(timeOut)
-            console.log("stop");
         }
     }
     const progress = () => {
         timeOut = setInterval(() => {
             let end = audioPlayer.duration;
             let current = audioPlayer.currentTime;
-            if (current == end) {
-                console.log("end");
+            if (current === end) {
                 audioPlayer.pause();
                 audioPlayer.currentTime = 0;
                 stopOpPlay()
             }
-            console.log(`Current : ${current}`);
         }, 1000);
     }
     useEffect(() => {

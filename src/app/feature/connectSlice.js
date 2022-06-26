@@ -4,19 +4,23 @@ const connectSlice = createSlice({
     name: "connect",
     initialState: {
         profile: {
-            username: "",
-            email: "",
             avatar: "",
-        }
+            email: "",
+            guest: false,
+            username: "",
+            school: null
+        },
+        isLoading: false
     },
     reducers: {
-        post: (state, action) => {
-            state.profile.username = action.payload.username;
-            state.profile.email = action.payload.email;
-            state.profile.avatar = action.payload.avatar;
+        setProfile: (state, action) => {
+            state.profile = action.payload
+        },
+        setLoading: (state, action) => {
+            state.isLoading = action
         }
     }
 })
 
-export const { post } = connectSlice.actions;
+export const { getProfile, setLoading } = connectSlice.actions
 export default connectSlice.reducer;
