@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import Button from "../../components/button/Index"
 import { imageCharacter } from "../../util/generateImage"
@@ -6,14 +6,20 @@ import Music from "../../components/music-player/Index"
 import { play } from "../../util/generateMusic"
 import { useSelector, useDispatch } from "react-redux"
 import { playm } from "../../app/feature/soundSlice"
+import Modal from "../../components/modal/Modal"
 
 import "./index.scss"
 
-const Index = ({ funcSetModal }) => {
+const Index = () => {
   const dispatch = useDispatch()
   const { isPlayed } = useSelector((state) => state.sound)
   const { profile } = useSelector(state => state.connect)
+  const [modalActive, setModalActive] = useState(false)
 
+  const funcSetModalActive = () => {
+    play()
+    setModalActive(!modalActive)
+  }
 
   const wa = () => {
     play()
@@ -26,7 +32,9 @@ const Index = ({ funcSetModal }) => {
   return (
     <div style={{ width: '100%', display: "flex", justifyContent: 'center' }} id="music">
       <Music played={isPlayed} />
-
+      <Modal title="Hello" close={funcSetModalActive} active={modalActive} >
+        <h1>Hello world</h1>
+      </Modal>
       <div className="header" >
         <div style={{ cursor: "pointer" }} onClick={aktivSuara}>
           {
@@ -58,7 +66,7 @@ const Index = ({ funcSetModal }) => {
       <div className='App-content'>
         <h2>Quizaze</h2>
         <p>Selamat datang di permainan Swalansky. ini adalah Webside yang menyediakan quiz bagi pengguna <br /> Mulai bermain! </p><br />
-        <Button title="Main sekarang" action={funcSetModal} />
+        <Button title="Main sekarang" action={funcSetModalActive} />
       </div>
       <div className="footer">
         <p>Admin Login</p>
