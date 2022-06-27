@@ -87,7 +87,7 @@ const Index = ({ loading, fetchUserAuth }) => {
       username: profileEditData.username
     })
     setImageUpload(null)
-    // fetchUserAuth()
+    fetchUserAuth()
     setIsLoading(false)
     setProfileEdit(false)
   }
