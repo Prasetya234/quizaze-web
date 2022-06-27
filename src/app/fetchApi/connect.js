@@ -13,3 +13,17 @@ export const getApi = async (id) => {
     return res
 }
 
+export const updateProfile = async (payload) => {
+    if (!navigator.onLine) {
+        alert("kamu sedang offline")
+        return
+    }
+    let res = null
+    try {
+        res = await axios.put(`${config.api.user}/${config.getAuthId()}`, payload, { headers: config.getAuthHeader() })
+    } catch (e) {
+        console.log(e);
+    }
+    return res
+}
+

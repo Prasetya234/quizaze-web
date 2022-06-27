@@ -1,26 +1,37 @@
 import React, { useState } from "react"
-import { OverlayTrigger, Tooltip } from "react-bootstrap"
-import Button from "../../components/button/Index"
+import { OverlayTrigger, Tooltip, Spinner } from "react-bootstrap"
 import { imageCharacter } from "../../util/generateImage"
-import Music from "../../components/music-player/Index"
 import { play } from "../../util/generateMusic"
 import { useSelector, useDispatch } from "react-redux"
 import { playm } from "../../app/feature/soundSlice"
+import Button from "../../components/button/Index"
+import { updateProfile } from "../../app/fetchApi/connect"
+
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+import { storage } from "../../firebase";
+
+import Loading from "../../components/loading/Index"
+import Music from "../../components/music-player/Index"
 import Modal from "../../components/modal/Modal"
+
 
 import "./index.scss"
 
-const Index = () => {
+const Index = ({ loading, fetchUserAuth }) => {
   const dispatch = useDispatch()
   const { isPlayed } = useSelector((state) => state.sound)
   const { profile } = useSelector(state => state.connect)
+  const [imageUpload, setImageUpload] = useState(null);
   const [modalActive, setModalActive] = useState(false)
-
-  const funcSetModalActive = () => {
-    play()
-    setModalActive(!modalActive)
-  }
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [modalProfile, setModalProfile] = useState(false)
+  const [profileEdit, setProfileEdit] = useState(false)
+  const [profileEditData, setProfileEditData] = useState({ avatar: '', username: '', email: '' })
+  const [image, setImage] = useState("")
   const wa = () => {
     play()
     window.open("https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%20menyenagkan")
@@ -29,11 +40,107 @@ const Index = () => {
     play()
     dispatch(playm({ play: !isPlayed }))
   }
+  const funcSetModalActive = () => {
+    play()
+    setModalActive(!modalActive)
+  }
+  const funcSetModalProfileActive = () => {
+    play()
+    setModalProfile(!modalProfile)
+  }
+  const changeImage = () => {
+    if (profileEdit) {
+      document.getElementById('file-input').click()
+    }
+  }
+  const onFileChange = async (event) => {
+    const file = await event.target.files[0]
+    setImageUpload(file)
+    const base64 = await convertBase64(file)
+    setImage(base64)
+
+  }
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file)
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      }
+      fileReader.onerror = (error) => {
+        reject(error);
+      }
+    })
+  }
+  const saveProfileUser = async () => {
+    setIsLoading(true)
+    let urlResponse
+    if (imageUpload) {
+      const imageRef = ref(storage, `images/${imageUpload.name + profile.username}`);
+      const snapshot = await uploadBytes(imageRef, imageUpload)
+      const url = await getDownloadURL(snapshot.ref);
+      urlResponse = url
+    }
+    await updateProfile({
+      avatar: imageUpload ? urlResponse : profile.avatar ? profile.avatar : "",
+      email: profileEditData.email,
+      username: profileEditData.username
+    })
+    setImageUpload(null)
+    // fetchUserAuth()
+    setIsLoading(false)
+    setProfileEdit(false)
+  }
+  const onEditProfile = () => {
+    play()
+    if (profileEdit) { saveProfileUser(); return }
+    setProfileEdit(true)
+    setProfileEditData({ username: profile.username, email: profile.email ? profile.email : "", avatar: profile.avatar });
+    setImage(profile.avatar)
+  }
   return (
     <div style={{ width: '100%', display: "flex", justifyContent: 'center' }} id="music">
+      {loading ? <Loading /> : ''}
       <Music played={isPlayed} />
-      <Modal title="Hello" close={funcSetModalActive} active={modalActive} >
-        <h1>Hello world</h1>
+      <Modal title="Gabung sekolah kamu" close={funcSetModalActive} active={modalActive} >
+        <h1>Sekolah</h1>
+      </Modal>
+      <Modal title="" close={funcSetModalProfileActive} active={modalProfile} >
+        {isLoading ? (
+          <div style={{ top: "50%", left: "50%", position: "absolute", transform: "translate(-50%, -50%)" }}>
+            <Spinner animation="border" role="status" >
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </div>
+        ) : ""}
+
+        <div className="profile-modal">
+          <div className="profile-modal-left">
+            <input id="file-input" type="file" accept="image/jpeg, image/png" style={{ display: 'none' }} onChange={e => onFileChange(e)} />
+            {profileEdit ? (
+              <img src={image ? image : imageCharacter(profile.username)} alt="Profile" className='profile-modal-image opacity' onClick={changeImage} id="image" />
+            ) : (<img src={profile.avatar ? profile.avatar : imageCharacter(profile.username)} alt="Profile" className='profile-modal-image' />)}
+          </div>
+          <div className="profile-modal-right">
+            {!profileEdit ? (
+              <div>
+                <p>{profile.username}</p>
+                <p style={{ color: profile.email ? '' : 'red' }}>{profile.email ? profile.email : "email kosong"}</p>
+                <p style={{ color: profile.school ? '' : 'red' }}>{profile.school ? profile.school.name : "sekolah kosong"}</p>
+              </div>
+            ) : (
+              <div>
+                <input type="text" placeholder="Username" autoFocus value={profileEditData.username} onChange={(e => setProfileEditData({ ...profileEditData, username: e.target.value }))} />
+                <input type="text" placeholder="Email" autoFocus value={profileEditData.email} onChange={(e => setProfileEditData({ ...profileEditData, email: e.target.value }))} />
+                <input type="text" placeholder="School" autoFocus />
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="profile-modal-id">
+          <p>{profile.id}</p>
+          <p className="profile-modal-edit" onClick={onEditProfile}>{profileEdit ? 'Simpan perubahan' : 'Edit profile'}</p>
+        </div>
       </Modal>
       <div className="header" >
         <div style={{ cursor: "pointer" }} onClick={aktivSuara}>
@@ -59,7 +166,7 @@ const Index = () => {
               </Tooltip>
             }
           >
-            <img src={imageCharacter(profile.username)} alt="Profile" className="profile" />
+            <img src={profile.avatar ? profile.avatar : imageCharacter(profile.username)} alt="Profile" className="profile" onClick={funcSetModalProfileActive} />
           </OverlayTrigger>
         </div>
       </div>

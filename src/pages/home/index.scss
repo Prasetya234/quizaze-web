@@ -1,5 +1,4 @@
 .App-content {
-  // background-color: aqua;
   width: 100%;
   h2 {
     font-size: 50px;
@@ -62,18 +61,51 @@
   }
 }
 
+.profile-modal {
+  text-align: left;
+  display: flex;
+  &-image {
+    width: 70%;
+  }
+  &-left {
+    width: 40%;
+  }
+  &-right {
+    width: 60%;
+  }
+  &-id {
+    font-size: 16px;
+    color: grey;
+    position: absolute;
+    bottom: 5px;
+    width: 94%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  &-edit {
+    cursor: pointer;
+    color: blue;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .header {
   display: flex;
-
   justify-content: space-between;
   position: absolute;
   width: 90%;
   top: 40px;
 }
+
 .profile {
   cursor: pointer;
   width: 40px;
   border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
   &:hover {
     opacity: 0.5;
   }
@@ -83,4 +115,44 @@
   to {
     background-position: 200% center;
   }
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid #cc6633;
+  padding: 5px 10px;
+  margin: 10px 0;
+  outline: none;
+  font-size: 18px;
+  width: 90%;
+  &:focus {
+    border-bottom: 1px solid #7ff511;
+  }
+}
+[placeholder]:focus::-webkit-input-placeholder {
+  transition: text-indent 0.4s 0.4s ease;
+  text-indent: -100%;
+  opacity: 1;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  border: none;
+  border-bottom: 1px solid #cc6633;
+  padding: 5px 10px;
+  outline: none;
+}
+input[type='number']:focus {
+  border-bottom: 1px solid #7ff511;
+}
+
+.opacity:hover {
+  opacity: 0.5;
+  cursor: pointer;
 }

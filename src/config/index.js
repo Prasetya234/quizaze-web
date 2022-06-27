@@ -1,7 +1,6 @@
 const BASE_PATH_V1 = process.env.REACT_APP_BASE_URL_V1
 // const BASE_PATH_V2 = process.env.APP_BASE_URL_V2
 console.log(BASE_PATH_V1);
-
 const api = {
     admin: `${BASE_PATH_V1}/api/admin`,
     question: `${BASE_PATH_V1}/api/question`,
@@ -11,10 +10,15 @@ const api = {
     connect: `${BASE_PATH_V1}/api/trafic-global-user/connect`
 }
 const getAuthHeader = () => {
+    const local = JSON.parse(localStorage.getItem('auth'))
     return {
-        Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+        Authorization: 'Bearer ' + local.jwt,
         'Access-Control-Allow-Origin': '*'
     }
+}
+const getAuthId = () => {
+    const local = JSON.parse(localStorage.getItem('auth'))
+    return local.user.id
 }
 const serializeQueryParams = (paramObj) => {
     if (paramObj) {
@@ -39,9 +43,10 @@ const serializeQueryParams = (paramObj) => {
 }
 
 const request = {
-    api: api,
+    api,
     getAuthHeader,
-    serializeQueryParams
+    serializeQueryParams,
+    getAuthId
 }
 
 export default request;
