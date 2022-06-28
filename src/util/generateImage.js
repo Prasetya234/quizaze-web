@@ -137,6 +137,4 @@ export function imageCharacter(char) {
     if (!char) return notprofile
     const res = images.find((item) => item.name === char[0].toLowerCase())
     return res ? res.value : notprofile
-
-
 }

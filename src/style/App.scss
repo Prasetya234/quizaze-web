@@ -148,4 +148,29 @@
   text-align: center;
   animation-duration: 1s;
   animation-fill-mode: both;
+  &-modal {
+    span {
+      color: blue;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      width: 100%;
+    }
+    &-sponsor {
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      margin-top: 20px;
+      img {
+        width: 70px;
+        margin: 10px;
+        border-radius: 50%;
+      }
+    }
+  }
 }

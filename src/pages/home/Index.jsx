@@ -3,9 +3,10 @@ import { Button, OverlayTrigger, Tooltip, Spinner, Form, InputGroup } from "reac
 import { imageCharacter } from "../../util/generateImage"
 import { play } from "../../util/generateMusic"
 import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { playm } from "../../app/feature/soundSlice"
 import ButtonLogin from "../../components/button/Index"
-import { updateProfile, findSchool, updateUserSchool } from "../../app/fetchApi/connect"
+import { updateProfile, findSchool, updateUserSchool, searchMateriUser, quesrionMateriUser } from "../../app/fetchApi/connect"
 
 import {
   ref,
@@ -21,7 +22,7 @@ import Modal from "../../components/modal/Modal"
 
 import "./index.scss"
 import { useEffect } from "react"
-
+import Swal from "sweetalert2"
 
 
 const Index = ({ fetchUserAuth }) => {
@@ -45,6 +46,7 @@ const Index = ({ fetchUserAuth }) => {
   const [profileEdit, setProfileEdit] = useState(false)
   const [profileEditData, setProfileEditData] = useState({ avatar: '', username: '', email: '' })
 
+  const [listMateri, setListMateri] = useState([])
   const [listSchool, setListSchool] = useState([])
 
   const wa = () => {
@@ -93,6 +95,14 @@ const Index = ({ fetchUserAuth }) => {
       alert("Username ga boleh kosong")
       return
     }
+    if (!navigator.onLine) {
+      await Swal.fire(
+        'Offline',
+        'Sepertinya kamu sedang offline',
+        'question'
+      )
+      return
+    }
     setIsLoading(true)
     let urlResponse
     if (imageUpload) {
@@ -106,26 +116,28 @@ const Index = ({ fetchUserAuth }) => {
       email: profileEditData.email,
       username: profileEditData.username
     })
+    setIsLoading(false)
     setImageUpload(null)
     fetchUserAuth()
-    setIsLoading(false)
     setProfileEdit(false)
   }
   const findSchoolByInput = async (school) => {
     setListSchool([])
     setIsLoading(true)
-    setListSchool(await findSchool({
+    const res = setListSchool(await findSchool({
       school: school ? school : ""
     }))
     setIsLoading(false)
+    if (!res) return
   }
   const onSelectSchool = async (e) => {
     setLoading(true)
-    await updateUserSchool(e)
+    const res = await updateUserSchool(e)
+    setLoading(false)
+    if (!res) return
     fetchUserAuth(false)
     setModalActive(false)
     setModalMateri(true)
-    setLoading(false)
   }
   const onEditProfile = () => {
     play()
@@ -134,16 +146,27 @@ const Index = ({ fetchUserAuth }) => {
     setProfileEditData({ username: profile.username, email: profile.email ? profile.email : "", avatar: profile.avatar });
     setImage(profile.avatar)
   }
+  const findMateriByInput = async (val) => {
+    setIsLoading(true)
+    setListMateri([])
+    const res = await searchMateriUser({ materi: val ? val : '' })
+    setIsLoading(false)
+    if (!res) return
+    setListMateri(res)
+  }
   const closeModalLogin = () => {
     play()
     setFormLogin({ username: "", password: "" })
     setModalLogin(false)
   }
-  const loginAdmin = () => { }
+  const loginAdmin = () => {
+    alert("logined")
+  }
   const playButton = () => {
     play();
     if (profile.school) {
       setModalMateri(true)
+      findMateriByInput()
     } else {
       funcSetModalActive()
     }
@@ -160,11 +183,11 @@ const Index = ({ fetchUserAuth }) => {
     authenticateTeams()
   }, [])
   return (
-    <div style={{ width: '100%', display: "flex", justifyContent: 'center' }} id="music">
+    <div style={{ width: '100%', marginTop: "-10px", display: "flex", justifyContent: 'center' }} id="music">
       {loading && <Loading />}
       <Music played={isPlayed} />
-      <Modal title="Pilih materi terlebih dahulu" close={() => { play(); setModalMateri(false) }} active={modalMateri} >
-        <h1>Materi</h1>
+      <Modal title="Pilih materi untuk memulai quiz" close={() => { play(); setModalMateri(false) }} active={modalMateri} >
+        <MateriSelect findMateriByInput={findMateriByInput} listMateri={listMateri} isLoading={isLoading} />
       </Modal>
       <Modal title="" close={closeModalLogin} active={modalLogin} height="auto">
         <LoginAdmin loginAdmin={loginAdmin} privacy={privacy} settingProvacy={settingProvacy} />
@@ -265,7 +288,7 @@ const Index = ({ fetchUserAuth }) => {
       </div>
       <div className='App-content'>
         <h2>Quizaze</h2>
-        <p>Selamat datang di permainan Swalansky. ini adalah Webside yang menyediakan quiz bagi pengguna <br /> Mulai bermain! </p><br />
+        <p>Selamat datang di permainan Quizaze. ini adalah Website yang menyediakan quiz bagi pengguna <br /> Mulai bermain! </p><br />
         <ButtonLogin title="Main sekarang" action={playButton} />
       </div>
       <div className="footer">
@@ -275,6 +298,36 @@ const Index = ({ fetchUserAuth }) => {
     </div >
   )
 }
+
+const MateriSelect = ({ isLoading, findMateriByInput, listMateri }) => {
+  const navigator = useNavigate()
+  const onSelectMateri = (id) => {
+    console.log(id);
+    navigator("/question/" + id)
+  }
+  return (
+    <div className="school-modal">
+      <div className="school-modal-content" >
+        <Form.Control type="text" placeholder="Cari nama materi" onChange={e => findMateriByInput(e.target.value)} />
+        <div className="school-modal-list_school">
+          {listMateri.map((e, i) => {
+            return (<div className="daftar-school" key={i} onClick={() => onSelectMateri(e.id)}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <p><b>{e.materi}</b></p>
+                <p>Total soal: {e.questionTotal}</p>
+              </div>
+              <p style={{ marginBottom: "5px" }}>Guru: {e.teacher}</p>
+            </div>)
+          })}
+          {isLoading && <div style={{ textAlign: "center", marginTop: "20px", height: "100px" }}><Spinner animation="border" variant="primary" />
+          </div>}
+          {!listMateri.length && !isLoading && <p className="not-school">Materi tidak tersedia</p>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 
 const LoginAdmin = ({ loginAdmin, privacy, settingProvacy }) => {
   const [validate, setValidate] = useState(false)

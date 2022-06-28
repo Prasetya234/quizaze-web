@@ -1,8 +1,10 @@
 import "./index.scss"
 import animals from "../../data/animals"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
 const Index = () => {
+    let { id } = useParams()
     const [question, setQuestion] = useState({})
     const [answer, setAnswer] = useState([])
     useEffect(() => {
