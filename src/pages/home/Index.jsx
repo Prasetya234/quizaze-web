@@ -1,10 +1,10 @@
 import React, { useState } from "react"
-import { OverlayTrigger, Tooltip, Spinner, Form } from "react-bootstrap"
+import { Button, OverlayTrigger, Tooltip, Spinner, Form, InputGroup } from "react-bootstrap"
 import { imageCharacter } from "../../util/generateImage"
 import { play } from "../../util/generateMusic"
 import { useSelector, useDispatch } from "react-redux"
 import { playm } from "../../app/feature/soundSlice"
-import Button from "../../components/button/Index"
+import ButtonLogin from "../../components/button/Index"
 import { updateProfile, findSchool, updateUserSchool } from "../../app/fetchApi/connect"
 
 import {
@@ -20,21 +20,32 @@ import Modal from "../../components/modal/Modal"
 
 
 import "./index.scss"
+import { useEffect } from "react"
+
+
 
 const Index = ({ fetchUserAuth }) => {
   const dispatch = useDispatch()
   const { isPlayed } = useSelector((state) => state.sound)
   const { profile } = useSelector(state => state.connect)
+
+  const [image, setImage] = useState("")
   const [imageUpload, setImageUpload] = useState(null);
-  const [modalActive, setModalActive] = useState(false)
+
+  const [privacy, setPrivacy] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const [modalMateri, setModalMateri] = useState(false)
+  const [modalLogin, setModalLogin] = useState(false);
+  const [modalActive, setModalActive] = useState(false)
   const [modalProfile, setModalProfile] = useState(false)
+
+  const [formLogin, setFormLogin] = useState({ username: "", password: "" })
   const [profileEdit, setProfileEdit] = useState(false)
   const [profileEditData, setProfileEditData] = useState({ avatar: '', username: '', email: '' })
-  const [image, setImage] = useState("")
-  const [listSchool, setListSchool] = useState([])
 
+  const [listSchool, setListSchool] = useState([])
 
   const wa = () => {
     play()
@@ -78,10 +89,14 @@ const Index = ({ fetchUserAuth }) => {
     })
   }
   const saveProfileUser = async () => {
+    if (!profileEditData.username) {
+      alert("Username ga boleh kosong")
+      return
+    }
     setIsLoading(true)
     let urlResponse
     if (imageUpload) {
-      const imageRef = ref(storage, `images/${imageUpload.name + profile.username}`);
+      const imageRef = ref(storage, `images/${imageUpload.name + "_" + profile.username}`);
       const snapshot = await uploadBytes(imageRef, imageUpload)
       const url = await getDownloadURL(snapshot.ref);
       urlResponse = url
@@ -108,7 +123,8 @@ const Index = ({ fetchUserAuth }) => {
     setLoading(true)
     await updateUserSchool(e)
     fetchUserAuth(false)
-    funcSetModalActive(false)
+    setModalActive(false)
+    setModalMateri(true)
     setLoading(false)
   }
   const onEditProfile = () => {
@@ -118,12 +134,43 @@ const Index = ({ fetchUserAuth }) => {
     setProfileEditData({ username: profile.username, email: profile.email ? profile.email : "", avatar: profile.avatar });
     setImage(profile.avatar)
   }
+  const closeModalLogin = () => {
+    play()
+    setFormLogin({ username: "", password: "" })
+    setModalLogin(false)
+  }
+  const loginAdmin = () => { }
+  const playButton = () => {
+    play();
+    if (profile.school) {
+      setModalMateri(true)
+    } else {
+      funcSetModalActive()
+    }
+  }
+  const settingProvacy = () => {
+    localStorage.setItem('privacy', true)
+    setPrivacy(true)
+  }
+  const authenticateTeams = () => {
+    const priv = localStorage.getItem('privacy')
+    setPrivacy(priv ? true : false)
+  }
+  useEffect(() => {
+    authenticateTeams()
+  }, [])
   return (
     <div style={{ width: '100%', display: "flex", justifyContent: 'center' }} id="music">
       {loading && <Loading />}
       <Music played={isPlayed} />
+      <Modal title="Pilih materi terlebih dahulu" close={() => { play(); setModalMateri(false) }} active={modalMateri} >
+        <h1>Materi</h1>
+      </Modal>
+      <Modal title="" close={closeModalLogin} active={modalLogin} height="auto">
+        <LoginAdmin loginAdmin={loginAdmin} privacy={privacy} settingProvacy={settingProvacy} />
+      </Modal >
       <Modal title="Daftar Sekolah" close={funcSetModalActive} active={modalActive} width="550px" height="480px">
-        <div className="school-modal">
+        {privacy ? <div className="school-modal">
           <div className="school-modal-content" >
             <Form.Control type="text" placeholder="Cari sekolahmu" onChange={e => findSchoolByInput(e.target.value)} />
             <div className="school-modal-list_school">
@@ -142,7 +189,14 @@ const Index = ({ fetchUserAuth }) => {
             </div>
             <p className="random">Pilih sekolah acak</p>
           </div>
-        </div>
+        </div> : <Form.Group className="mb-3 agree-privacy">
+          <Form.Check
+            required
+            label="Agree to terms and conditions"
+            onClick={settingProvacy}
+          />
+        </Form.Group>
+        }
       </Modal>
       <Modal title="" close={funcSetModalProfileActive} active={modalProfile} height="350px">
         {isLoading ? (
@@ -212,14 +266,62 @@ const Index = ({ fetchUserAuth }) => {
       <div className='App-content'>
         <h2>Quizaze</h2>
         <p>Selamat datang di permainan Swalansky. ini adalah Webside yang menyediakan quiz bagi pengguna <br /> Mulai bermain! </p><br />
-        <Button title="Main sekarang" action={funcSetModalActive} />
+        <ButtonLogin title="Main sekarang" action={playButton} />
       </div>
       <div className="footer">
-        <p>Admin Login</p>
+        <p onClick={() => { play(); setModalLogin(true) }}>Admin Login</p>
         <p onClick={wa}>Join School</p>
       </div>
     </div >
   )
 }
 
+const LoginAdmin = ({ loginAdmin, privacy, settingProvacy }) => {
+  const [validate, setValidate] = useState(false)
+  return (
+    <div className="login">
+      <p className="title">Login Admin</p>
+      <Form noValidate validated={validate} className="form" onSubmit={loginAdmin}>
+        <Form.Group controlId="validationCustomUsername" style={{ marginBottom: "10px", width: '100%' }}>
+          <Form.Label>Username</Form.Label>
+          <InputGroup hasValidation>
+            <Form.Control
+              type="text"
+              placeholder="Username"
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              Username harus di isi
+            </Form.Control.Feedback>
+          </InputGroup>
+        </Form.Group>
+        <Form.Group controlId="validationCustomPassword" style={{ width: '100%' }}>
+          <Form.Label>Password</Form.Label>
+          <InputGroup hasValidation>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              aria-describedby="inputGroupPrepend"
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              Paassword harus di isi
+            </Form.Control.Feedback>
+          </InputGroup>
+        </Form.Group>
+        {!privacy && <Form.Group className="mb-3" style={{ width: '100%', fontSize: "18px" }}>
+          <Form.Check
+            required
+            label="Agree to terms and conditions"
+            onClick={settingProvacy}
+          />
+        </Form.Group>}
+        <Button type="submit" style={{ textAlign: "center" }}>Masuk</Button>
+      </Form>
+    </div>
+  )
+}
+
+
 export default Index;
+

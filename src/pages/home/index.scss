@@ -23,6 +23,28 @@
     width: 90%;
   }
 }
+
+.login {
+  margin-top: 10px;
+  text-align: left;
+  display: flex;
+  font-size: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  .title {
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+  }
+  .form {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 .footer {
   justify-content: space-between;
   position: absolute;
@@ -193,4 +215,12 @@ input[type='number']:focus {
 .opacity:hover {
   opacity: 0.5;
   cursor: pointer;
+}
+
+.agree-privacy {
+  text-align: left;
+  width: 100%;
+  font-size: 18px;
+  position: absolute;
+  bottom: 0px;
 }
