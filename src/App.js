@@ -6,6 +6,7 @@ import { React, useEffect, useState } from 'react';
 import axios from "axios";
 import Swal from 'sweetalert2';
 
+import Loading from './components/loading/Index';
 import Home from "./pages/home/Index"
 import Stars from "./components/stars/Index"
 
@@ -43,12 +44,13 @@ const App = () => {
   return (
     <div>
       <Stars />
+      {loading && <Loading />}
       <div className="App">
         <header className="App-header">
           <Router>
             <Switch>
               <Route exact path={["/", "/home"]}>
-                <Home loading={loading} fetchUserAuth={fetchUserAuth} />
+                <Home fetchUserAuth={fetchUserAuth} />
               </Route>
               <Route>Page not found</Route>
             </Switch>

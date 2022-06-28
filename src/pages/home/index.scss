@@ -61,6 +61,44 @@
   }
 }
 
+.random {
+  font-size: 16px;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.school-modal {
+  display: flex;
+  justify-content: center;
+  &-content {
+    width: 80%;
+    text-align: left;
+  }
+  &-list_school {
+    margin-top: 5px;
+    overflow-y: auto;
+    max-height: 300px;
+  }
+}
+.not-school {
+  text-align: center;
+  margin-top: 90px;
+}
+.daftar-school {
+  font-size: 18px;
+  color: rgb(212, 206, 206);
+  margin: 8px 0px;
+  padding: 15px;
+  line-height: 10px;
+  border-radius: 10px;
+  background-color: rgb(158, 143, 143);
+  cursor: pointer;
+  &:hover {
+    background-color: #6d4ee6;
+  }
+}
 .profile-modal {
   text-align: left;
   display: flex;

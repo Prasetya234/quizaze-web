@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import { OverlayTrigger, Tooltip, Spinner } from "react-bootstrap"
+import { OverlayTrigger, Tooltip, Spinner, Form } from "react-bootstrap"
 import { imageCharacter } from "../../util/generateImage"
 import { play } from "../../util/generateMusic"
 import { useSelector, useDispatch } from "react-redux"
 import { playm } from "../../app/feature/soundSlice"
 import Button from "../../components/button/Index"
-import { updateProfile } from "../../app/fetchApi/connect"
+import { updateProfile, findSchool, updateUserSchool } from "../../app/fetchApi/connect"
 
 import {
   ref,
@@ -21,17 +21,21 @@ import Modal from "../../components/modal/Modal"
 
 import "./index.scss"
 
-const Index = ({ loading, fetchUserAuth }) => {
+const Index = ({ fetchUserAuth }) => {
   const dispatch = useDispatch()
   const { isPlayed } = useSelector((state) => state.sound)
   const { profile } = useSelector(state => state.connect)
   const [imageUpload, setImageUpload] = useState(null);
   const [modalActive, setModalActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [modalProfile, setModalProfile] = useState(false)
   const [profileEdit, setProfileEdit] = useState(false)
   const [profileEditData, setProfileEditData] = useState({ avatar: '', username: '', email: '' })
   const [image, setImage] = useState("")
+  const [listSchool, setListSchool] = useState([])
+
+
   const wa = () => {
     play()
     window.open("https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%20menyenagkan")
@@ -43,6 +47,7 @@ const Index = ({ loading, fetchUserAuth }) => {
   const funcSetModalActive = () => {
     play()
     setModalActive(!modalActive)
+    if (!modalActive) findSchoolByInput()
   }
   const funcSetModalProfileActive = () => {
     play()
@@ -91,6 +96,21 @@ const Index = ({ loading, fetchUserAuth }) => {
     setIsLoading(false)
     setProfileEdit(false)
   }
+  const findSchoolByInput = async (school) => {
+    setListSchool([])
+    setIsLoading(true)
+    setListSchool(await findSchool({
+      school: school ? school : ""
+    }))
+    setIsLoading(false)
+  }
+  const onSelectSchool = async (e) => {
+    setLoading(true)
+    await updateUserSchool(e)
+    fetchUserAuth(false)
+    funcSetModalActive(false)
+    setLoading(false)
+  }
   const onEditProfile = () => {
     play()
     if (profileEdit) { saveProfileUser(); return }
@@ -100,12 +120,31 @@ const Index = ({ loading, fetchUserAuth }) => {
   }
   return (
     <div style={{ width: '100%', display: "flex", justifyContent: 'center' }} id="music">
-      {loading ? <Loading /> : ''}
+      {loading && <Loading />}
       <Music played={isPlayed} />
-      <Modal title="Gabung sekolah kamu" close={funcSetModalActive} active={modalActive} >
-        <h1>Sekolah</h1>
+      <Modal title="Daftar Sekolah" close={funcSetModalActive} active={modalActive} width="550px" height="480px">
+        <div className="school-modal">
+          <div className="school-modal-content" >
+            <Form.Control type="text" placeholder="Cari sekolahmu" onChange={e => findSchoolByInput(e.target.value)} />
+            <div className="school-modal-list_school">
+              {listSchool.map((e, i) => {
+                return (<div className="daftar-school" key={i} onClick={() => onSelectSchool(e.id)}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <p><b>{e.name}</b></p>
+                    <p>{i + 1}</p>
+                  </div>
+                  <p style={{ marginBottom: "5px" }}>{e.address}</p>
+                </div>)
+              })}
+              {isLoading && <div style={{ textAlign: "center", marginTop: "20px", height: "100px" }}><Spinner animation="border" variant="primary" />
+              </div>}
+              {!listSchool.length && !isLoading && <p className="not-school">Sekolah tidak tersedia</p>}
+            </div>
+            <p className="random">Pilih sekolah acak</p>
+          </div>
+        </div>
       </Modal>
-      <Modal title="" close={funcSetModalProfileActive} active={modalProfile} >
+      <Modal title="" close={funcSetModalProfileActive} active={modalProfile} height="350px">
         {isLoading ? (
           <div style={{ top: "50%", left: "50%", position: "absolute", transform: "translate(-50%, -50%)" }}>
             <Spinner animation="border" role="status" >
@@ -125,14 +164,14 @@ const Index = ({ loading, fetchUserAuth }) => {
             {!profileEdit ? (
               <div>
                 <p>{profile.username}</p>
-                <p style={{ color: profile.email ? '' : 'red' }}>{profile.email ? profile.email : "email kosong"}</p>
-                <p style={{ color: profile.school ? '' : 'red' }}>{profile.school ? profile.school.name : "sekolah kosong"}</p>
+                <p style={{ color: profile.email ? '' : 'red' }}>{profile.email ? profile.email : "Belum mengisi email"}</p>
+                <p style={{ color: profile.school ? '' : 'red' }}>{profile.school ? profile.school.name : "Belum memilih sekolah"}</p>
               </div>
             ) : (
               <div>
                 <input type="text" placeholder="Username" autoFocus value={profileEditData.username} onChange={(e => setProfileEditData({ ...profileEditData, username: e.target.value }))} />
                 <input type="text" placeholder="Email" autoFocus value={profileEditData.email} onChange={(e => setProfileEditData({ ...profileEditData, email: e.target.value }))} />
-                <input type="text" placeholder="School" autoFocus />
+                <p style={{ fontSize: "15px", marginTop: "10px" }}>{profile.school ? profile.school.name : "Belum memilih sekolah"} &nbsp;<span className="profile-modal-edit">{profile.school ? "Ganti Sekolah" : "Pilih Sekolah"}</span></p>
               </div>
             )}
           </div>
@@ -141,7 +180,7 @@ const Index = ({ loading, fetchUserAuth }) => {
           <p>{profile.id}</p>
           <p className="profile-modal-edit" onClick={onEditProfile}>{profileEdit ? 'Simpan perubahan' : 'Edit profile'}</p>
         </div>
-      </Modal>
+      </Modal >
       <div className="header" >
         <div style={{ cursor: "pointer" }} onClick={aktivSuara}>
           {
@@ -179,7 +218,7 @@ const Index = ({ loading, fetchUserAuth }) => {
         <p>Admin Login</p>
         <p onClick={wa}>Join School</p>
       </div>
-    </div>
+    </div >
   )
 }
 
