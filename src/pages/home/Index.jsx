@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { playm } from "../../app/feature/soundSlice"
 import ButtonLogin from "../../components/button/Index"
-import { updateProfile, findSchool, updateUserSchool, searchMateriUser, quesrionMateriUser } from "../../app/fetchApi/connect"
+import { updateProfile, findSchool, updateUserSchool, searchMateriUser, selectSchoolRandom, postAdminLogin } from "../../app/fetchApi/connect"
 
 import {
   ref,
@@ -26,6 +26,7 @@ import Swal from "sweetalert2"
 
 
 const Index = ({ fetchUserAuth }) => {
+  const navigator = useNavigate()
   const dispatch = useDispatch()
   const { isPlayed } = useSelector((state) => state.sound)
   const { profile } = useSelector(state => state.connect)
@@ -33,6 +34,7 @@ const Index = ({ fetchUserAuth }) => {
   const [image, setImage] = useState("")
   const [imageUpload, setImageUpload] = useState(null);
 
+  const [resFailLogin, setResFailLogin] = useState(false)
   const [privacy, setPrivacy] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -41,8 +43,8 @@ const Index = ({ fetchUserAuth }) => {
   const [modalLogin, setModalLogin] = useState(false);
   const [modalActive, setModalActive] = useState(false)
   const [modalProfile, setModalProfile] = useState(false)
+  const [changeSchool, setChangeSchool] = useState(false)
 
-  const [formLogin, setFormLogin] = useState({ username: "", password: "" })
   const [profileEdit, setProfileEdit] = useState(false)
   const [profileEditData, setProfileEditData] = useState({ avatar: '', username: '', email: '' })
 
@@ -51,7 +53,7 @@ const Index = ({ fetchUserAuth }) => {
 
   const wa = () => {
     play()
-    window.open("https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%20menyenagkan")
+    window.open("https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%menyengakan")
   }
   const aktivSuara = () => {
     play()
@@ -124,20 +126,38 @@ const Index = ({ fetchUserAuth }) => {
   const findSchoolByInput = async (school) => {
     setListSchool([])
     setIsLoading(true)
-    const res = setListSchool(await findSchool({
+    const res = await findSchool({
       school: school ? school : ""
-    }))
+    })
     setIsLoading(false)
     if (!res) return
+    setListSchool(res)
+  }
+  const selectRandomSchool = async () => {
+    setLoading(true)
+    const res = selectSchoolRandom()
+    setLoading(false)
+    if (!res) return
+    setModalActive(false)
+    if (changeSchool) {
+      setChangeSchool(false)
+      setModalProfile(true)
+    } else {
+      setModalMateri(true)
+    }
   }
   const onSelectSchool = async (e) => {
-    setLoading(true)
     const res = await updateUserSchool(e)
     setLoading(false)
     if (!res) return
-    fetchUserAuth(false)
+    fetchUserAuth()
     setModalActive(false)
-    setModalMateri(true)
+    if (changeSchool) {
+      setChangeSchool(false)
+      setModalProfile(true)
+    } else {
+      setModalMateri(true)
+    }
   }
   const onEditProfile = () => {
     play()
@@ -156,11 +176,17 @@ const Index = ({ fetchUserAuth }) => {
   }
   const closeModalLogin = () => {
     play()
-    setFormLogin({ username: "", password: "" })
     setModalLogin(false)
   }
-  const loginAdmin = () => {
-    alert("logined")
+  const loginAdmin = async (payload) => {
+    setLoading(true)
+    const res = await postAdminLogin(payload)
+    if (!res) {
+      setResFailLogin(true)
+    } else {
+      navigator("/admin")
+    }
+    setLoading(false)
   }
   const playButton = () => {
     play();
@@ -179,6 +205,12 @@ const Index = ({ fetchUserAuth }) => {
     const priv = localStorage.getItem('privacy')
     setPrivacy(priv ? true : false)
   }
+  const onChangeSchool = () => {
+    setChangeSchool(true)
+    setModalProfile(false)
+    play();
+    funcSetModalActive()
+  }
   useEffect(() => {
     authenticateTeams()
   }, [])
@@ -190,7 +222,7 @@ const Index = ({ fetchUserAuth }) => {
         <MateriSelect findMateriByInput={findMateriByInput} listMateri={listMateri} isLoading={isLoading} />
       </Modal>
       <Modal title="" close={closeModalLogin} active={modalLogin} height="auto">
-        <LoginAdmin loginAdmin={loginAdmin} privacy={privacy} settingProvacy={settingProvacy} />
+        <LoginAdminPage loginAdmin={loginAdmin} privacy={privacy} settingProvacy={settingProvacy} failLog={resFailLogin} />
       </Modal >
       <Modal title="Daftar Sekolah" close={funcSetModalActive} active={modalActive} width="550px" height="480px">
         {privacy ? <div className="school-modal">
@@ -210,7 +242,7 @@ const Index = ({ fetchUserAuth }) => {
               </div>}
               {!listSchool.length && !isLoading && <p className="not-school">Sekolah tidak tersedia</p>}
             </div>
-            <p className="random">Pilih sekolah acak</p>
+            {listSchool.length ? <p className="random" onClick={selectRandomSchool}>Pilih sekolah acak</p> : ''}
           </div>
         </div> : <Form.Group className="mb-3 agree-privacy">
           <Form.Check
@@ -248,7 +280,7 @@ const Index = ({ fetchUserAuth }) => {
               <div>
                 <input type="text" placeholder="Username" autoFocus value={profileEditData.username} onChange={(e => setProfileEditData({ ...profileEditData, username: e.target.value }))} />
                 <input type="text" placeholder="Email" autoFocus value={profileEditData.email} onChange={(e => setProfileEditData({ ...profileEditData, email: e.target.value }))} />
-                <p style={{ fontSize: "15px", marginTop: "10px" }}>{profile.school ? profile.school.name : "Belum memilih sekolah"} &nbsp;<span className="profile-modal-edit">{profile.school ? "Ganti Sekolah" : "Pilih Sekolah"}</span></p>
+                <p style={{ fontSize: "15px", marginTop: "10px" }}>{profile.school ? profile.school.name : "Belum memilih sekolah"} &nbsp;<span className="profile-modal-edit" onClick={onChangeSchool}>{profile.school ? "Ganti Sekolah" : "Pilih Sekolah"}</span></p>
               </div>
             )}
           </div>
@@ -329,12 +361,24 @@ const MateriSelect = ({ isLoading, findMateriByInput, listMateri }) => {
 }
 
 
-const LoginAdmin = ({ loginAdmin, privacy, settingProvacy }) => {
+const LoginAdminPage = ({ loginAdmin, privacy, settingProvacy, failLog }) => {
   const [validate, setValidate] = useState(false)
+  const [fromLoginUsername, setFromLoginUsername] = useState("")
+  const [fromLoginPassword, setFromLoginPassword] = useState("")
+  const checkingLogin = (e) => {
+    e.preventDefault();
+    if (!fromLoginUsername || !fromLoginPassword) {
+      setValidate(true)
+      return
+    }
+    loginAdmin({ username: fromLoginUsername, password: fromLoginPassword })
+  }
   return (
     <div className="login">
       <p className="title">Login Admin</p>
-      <Form noValidate validated={validate} className="form" onSubmit={loginAdmin}>
+      <Form noValidate validated={validate} className="form" onSubmit={checkingLogin}>
+        {failLog && <p className="fail-login">Username atau Password salah</p>}
+
         <Form.Group controlId="validationCustomUsername" style={{ marginBottom: "10px", width: '100%' }}>
           <Form.Label>Username</Form.Label>
           <InputGroup hasValidation>
@@ -342,6 +386,8 @@ const LoginAdmin = ({ loginAdmin, privacy, settingProvacy }) => {
               type="text"
               placeholder="Username"
               required
+              value={fromLoginUsername}
+              onChange={(e) => setFromLoginUsername(e.target.value)}
             />
             <Form.Control.Feedback type="invalid">
               Username harus di isi
@@ -356,6 +402,8 @@ const LoginAdmin = ({ loginAdmin, privacy, settingProvacy }) => {
               placeholder="Password"
               aria-describedby="inputGroupPrepend"
               required
+              value={fromLoginPassword}
+              onChange={(e) => setFromLoginPassword(e.target.value)}
             />
             <Form.Control.Feedback type="invalid">
               Paassword harus di isi
@@ -369,6 +417,7 @@ const LoginAdmin = ({ loginAdmin, privacy, settingProvacy }) => {
             onClick={settingProvacy}
           />
         </Form.Group>}
+
         <Button type="submit" style={{ textAlign: "center" }}>Masuk</Button>
       </Form>
     </div>
@@ -377,4 +426,5 @@ const LoginAdmin = ({ loginAdmin, privacy, settingProvacy }) => {
 
 
 export default Index;
+
 

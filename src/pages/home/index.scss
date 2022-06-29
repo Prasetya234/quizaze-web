@@ -89,8 +89,22 @@
   bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: blue;
+  }
 }
-
+.fail-login {
+  padding: 10px 0px;
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  border: 2px solid red;
+  color: black;
+  border-radius: 10px;
+  background-color: rgb(235, 119, 119);
+}
 .school-modal {
   display: flex;
   justify-content: center;

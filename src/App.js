@@ -4,21 +4,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { React, useEffect, useState } from 'react';
 import axios from "axios";
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'
 import google from "./assets/icon/google.jpeg"
 import react from "./assets/icon/react.png"
 
-import Loading from './components/loading/Index';
+import Loading from './components/loading/Index'
 import Home from "./pages/home/Index"
+import Admin from "./pages/admin/Index"
 import Question from "./pages/question/Index"
 import Stars from "./components/stars/Index"
 import NotFound from "./pages/404/Index"
 import Modal from "./components/modal/Modal"
 
-import { play } from './util/generateMusic';
-import { setProfile } from './app/feature/connectSlice';
+import { play } from './util/generateMusic'
+import { setProfile } from './app/feature/connectSlice'
 import { getApi } from "./app/fetchApi/connect"
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux'
 
 axios.interceptors.response.use(undefined, async (err) => {
   console.log(err);
@@ -29,6 +30,20 @@ axios.interceptors.response.use(undefined, async (err) => {
       icon: 'info'
     })
     window.location.reload()
+  } else if (err.response.status == 0) {
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Offline for maintenance',
+      text: "Aplikasi ini sedang dilakukan maintenance. \n Mohon periksa kembali nanti.",
+      confirmButtonText: "Close",
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp'
+      }
+    })
+    window.open('', '_self').close();
   }
   return Promise.reject(err)
 })
@@ -53,22 +68,7 @@ const App = () => {
     <div>
       <Stars />
       <Modal title="Tentang kami" active={modalAbout} close={() => { play(); setModalAbout(false) }} height="auto">
-        <div className='copyright-modal'>
-          <h1>Sponsor By </h1>
-
-          <div className="copyright-modal-sponsor">
-            <div>
-              <img src={google} />
-            </div>
-            <div>
-              <img src={react} />
-            </div>
-          </div>
-          <p style={{ fontWeight: "bold", marginBottom: "0px", fontSize: "20px" }}>Tujuan :</p>
-          <p>Quizaze adalah website yang menyediakan soal yang menarik untuk kamu yang suka malas-malasan untuk mengerhakan tugas sekolah</p>
-          <p style={{ fontWeight: "bold", marginBottom: "5px", fontSize: "20px" }}>Developer</p>
-          <p><span onClick={() => window.open("https://www.instagram.com/xzy_prasetya/")}>Prasetya Dhany Putra</span> <b>(Leader & developer quizaze)</b></p>
-        </div>
+        <AbautMe />
       </Modal >
       {loading && <Loading />}
       <div className="App">
@@ -77,6 +77,7 @@ const App = () => {
             <Routes>
               <Route exact path="/" element={<Home fetchUserAuth={fetchUserAuth} />} />
               <Route path="/question/:id" element={<Question />} />
+              <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />}></Route>
             </Routes>
           </BrowserRouter>
@@ -85,6 +86,26 @@ const App = () => {
       </div>
     </div >
   );
+}
+
+const AbautMe = () => {
+  return (
+    <div className='copyright-modal'>
+      <h1>Sponsor By </h1>
+      <div className="copyright-modal-sponsor">
+        <div>
+          <img src={google} />
+        </div>
+        <div>
+          <img src={react} />
+        </div>
+      </div>
+      <p style={{ fontWeight: "bold", marginBottom: "0px", fontSize: "20px" }}>Tujuan :</p>
+      <p>Quizaze adalah website yang menyediakan soal yang menarik untuk kamu yang suka malas-malasan untuk mengerhakan tugas sekolah</p>
+      <p style={{ fontWeight: "bold", marginBottom: "5px", fontSize: "20px" }}>Developer</p>
+      <p><span onClick={() => window.open("https://www.instagram.com/xzy_prasetya/")}>Prasetya Dhany Putra</span> <b>(Leader & developer quizaze)</b></p>
+    </div>
+  )
 }
 
 export default App;
