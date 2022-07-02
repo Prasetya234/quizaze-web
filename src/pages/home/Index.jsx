@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
@@ -17,7 +18,6 @@ import {
   uploadBytes,
   getDownloadURL,
 } from 'firebase/storage';
-import Swal from 'sweetalert2';
 import { imageCharacter } from '../../util/generateImage';
 import { play } from '../../util/generateMusic';
 import { playm } from '../../app/feature/soundSlice';
@@ -111,14 +111,6 @@ function Index() {
   const saveProfileUser = async () => {
     if (!profileEditData.username) {
       alert('Username ga boleh kosong');
-      return;
-    }
-    if (!navigator.onLine) {
-      await Swal.fire(
-        'Offline',
-        'Sepertinya kamu sedang offline',
-        'question',
-      );
       return;
     }
     setIsLoading(true);
@@ -267,11 +259,11 @@ function Index() {
                   <div
                     className="daftar-school"
                     key={i}
-                    onClick={() => onSelectSchool(e.id)}
+                    onClick={() => { e.alreadyAnswer ? '' : onSelectSchool(e.id); }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <p><b>{e.name}</b></p>
-                      <p>{i + 1}</p>
+                      {!e.alreadyAnswer ? <p>{i + 1}</p> : <p style={{ fontWeight: 'bold', color: 'black' }}>Sudah di jawab</p>}
                     </div>
                     <p style={{ marginBottom: '5px' }}>{e.address}</p>
                   </div>
