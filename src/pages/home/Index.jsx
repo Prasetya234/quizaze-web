@@ -100,7 +100,31 @@ function Index() {
     setLoading(false);
     if (!res) return;
     dispatch(setProfile(res.user));
+    setTimeout(() => {
+      checkingAlreadyQuestion()
+    }, 2000);
   };
+  const checkingAlreadyQuestion = async () => {
+    const local = JSON.parse(localStorage.getItem('question-now'))
+    if (!local) {
+      return
+    }
+    const res = await Swal.fire({
+      text: `Sepertinya kamu masih mengikuti quiz ${local.materi}, kalau kamu tidak melanjutkan kamu tidak bisa mengerjakan quiz ${local.materi} lagi dan nilai kamu akan terkirim`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Berhenti',
+      confirmButtonText: 'Lanjutin'
+    })
+    if (!res.isConfirmed) {
+      localStorage.removeItem('num')
+      localStorage.removeItem('question-now')
+      return
+    }
+    navigator("/question/" + local.id)
+  }
   const onFileChange = async (event) => {
     const file = await event.target.files[0];
     setImageUpload(file);
@@ -223,7 +247,9 @@ function Index() {
   };
   const authenticateTeams = () => {
     const priv = localStorage.getItem('privacy');
-    setPrivacy(!!priv);
+
+    setPrivacy(priv ? true : false);
+    console.log(privacy);
   };
   const onChangeSchool = () => {
     setChangeSchool(true);
@@ -232,6 +258,7 @@ function Index() {
     funcSetModalActive();
   };
   useEffect(() => {
+
     authenticateTeams();
     fetchUserAuth();
   }, []);
@@ -260,7 +287,15 @@ function Index() {
         />
       </Modal>
       <Modal title="Daftar Sekolah" close={funcSetModalActive} active={modalActive} width="550px" height="480px">
-        {privacy ? (
+        {!privacy ? (
+          <Form.Group className="mb-3 agree-privacy">
+            <Form.Check
+              required
+              label="Agree to terms and conditions"
+              onClick={settingProvacy}
+            />
+          </Form.Group>
+        ) : (
           <div className="school-modal">
             <div className="school-modal-content">
               <Form.Control type="text" placeholder="Cari sekolahmu" onChange={(e) => findSchoolByInput(e.target.value)} />
@@ -288,14 +323,6 @@ function Index() {
               {listSchool.length ? <p className="random" onClick={selectRandomSchool}>Pilih sekolah acak</p> : ''}
             </div>
           </div>
-        ) : (
-          <Form.Group className="mb-3 agree-privacy">
-            <Form.Check
-              required
-              label="Agree to terms and conditions"
-              onClick={settingProvacy}
-            />
-          </Form.Group>
         )}
       </Modal>
       <Modal title="" close={funcSetModalProfileActive} active={modalProfile} height="350px">
