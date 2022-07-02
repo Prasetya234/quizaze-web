@@ -104,9 +104,9 @@ export const questionMateriUser = async (materiId) => {
     return;
   }
   try {
-    res = await axios.get(`${config.api.question}/${materiId}/user`, { headers: config.getAuthHeader() });
+    res = await axios.get(`${config.api.question}/${materiId}/user`, { headers: config.getAuthHeader() }).then(be => be.data.data);
   } finally {
-    return res.data.data;
+    return res;
   }
 };
 

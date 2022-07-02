@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import google from './assets/icon/google.jpeg';
 import react from './assets/icon/react.png';
 
+import Congrats from './pages/congrats/Index'
 import Home from './pages/home/Index';
 import Admin from './pages/admin/Index';
 import Question from './pages/question/Index';
@@ -62,6 +63,7 @@ function App() {
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route path="/question/:id" element={<Question />} />
+              <Route path="/user-score/:id" element={<Congrats />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

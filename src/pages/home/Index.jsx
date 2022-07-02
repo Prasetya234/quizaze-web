@@ -30,6 +30,7 @@ import {
 
 import { storage } from '../../firebase';
 
+import Swal from 'sweetalert2';
 import Loading from '../../components/loading/Index';
 import Music from '../../components/music-player/Index';
 import Modal from '../../components/modal/Modal';
@@ -74,10 +75,18 @@ function Index() {
     play();
     setModalActive(!modalActive);
     if (!modalActive) findSchoolByInput();
+    else {
+      if (changeSchool) {
+        setModalActive(false);
+        setChangeSchool(false);
+        setModalProfile(true);
+      }
+    }
   };
   const funcSetModalProfileActive = () => {
     play();
     setModalProfile(!modalProfile);
+    setProfileEdit(false)
   };
   const changeImage = () => {
     if (profileEdit) {
@@ -144,9 +153,10 @@ function Index() {
   const selectRandomSchool = async () => {
     play();
     setLoading(true);
-    const res = selectSchoolRandom();
+    const res = await selectSchoolRandom();
     setLoading(false);
     if (!res) return;
+    fetchUserAuth()
     setModalActive(false);
     if (changeSchool) {
       setChangeSchool(false);
@@ -389,11 +399,24 @@ function Index() {
 
 function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
   const navigator = useNavigate();
-  const onSelectMateri = (id) => {
+  const onSelectMateri = async (item) => {
     play();
+    const res = await Swal.fire({
+      title: `Materi ${item.materi}`,
+      text: `${item.description}`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancle',
+      confirmButtonText: 'Mulai'
+    })
+    if (!res.isConfirmed) {
+      return
+    }
     readyAnswer()
     setTimeout(() => {
-      navigator(`/question/${id}`);
+      navigator(`/question/${item.id}`);
     }, 2500);
   };
   return (
@@ -402,7 +425,7 @@ function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
         <Form.Control type="text" placeholder="Cari nama materi" onChange={(e) => findMateriByInput(e.target.value)} />
         <div className="school-modal-list_school">
           {listMateri.map((e, i) => (
-            <div className="daftar-school" key={i} onClick={() => onSelectMateri(e.id)}>
+            <div className="daftar-school" key={i} onClick={() => onSelectMateri(e)}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p><b>{e.materi}</b></p>
                 <p>

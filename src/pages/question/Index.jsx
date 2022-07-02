@@ -7,42 +7,31 @@
 /* eslint-disable indent */
 /* eslint-disable react/react-in-jsx-scope */
 import './index.scss';
+import notImage from '../../assets/icon/not-image.png'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useDispatch } from 'react-redux';
 import { setProfile } from '../../app/feature/connectSlice';
 import { questionMateriUser, getApi } from '../../app/fetchApi/connect';
 import { useNavigate, useParams } from 'react-router-dom';
+import { play } from '../../util/generateMusic';
 
 function Index() {
     const navigate = useNavigate()
     const dispatch = useDispatch();
+    const [activeSelect, setActiveSelect] = useState(null);
+    const [lastNumbQuest, setLastNumbQuest] = useState(0);
     const { id } = useParams();
     const [question, setQuestion] = useState({
-        questionTotal: 0,
-        materi: '',
-        question: [],
+        image: "",
+        question: "",
+        listAnswer: []
     });
-    const [answer, setAnswer] = useState(
-        [
-            {
-                name: 'answer',
-                awok: false
-            },
-            {
-                name: 'answer',
-                awok: false
-            },
-            {
-                name: 'answer',
-                awok: false
-            },
-            {
-                name: 'answer',
-                awok: false
-            },
-        ]
-    );
+    const [materi, setMateri] = useState({
+        materi: "",
+        questionTotal: 0,
+        question: []
+    });
     const [loadQuestion, setLoadQuestion] = useState(false);
     const fetchUserAuth = async () => {
         const datauser = JSON.parse(localStorage.getItem('auth'));
@@ -50,26 +39,36 @@ function Index() {
         if (!res) return;
         dispatch(setProfile(res.user));
     };
-    const selectAnswer = () => {
-        setAnswer(prevState => {
-            const newState = prevState.map(obj => {
-                return { ...obj, awok: false };
-            });
-            return newState;
-        });
+    const selectAnswer = (idx) => {
+        play()
+        setActiveSelect(idx)
     };
     const fetchQuestionUser = async () => {
         setLoadQuestion(true);
         await fetchUserAuth();
         const res = await questionMateriUser(id);
         setLoadQuestion(false);
-        if (!res) return;
-        setQuestion(res);
+        if (!res) {
+            navigate("/not-found")
+            return
+        };
+        localStorage.setItem('question-now', JSON.stringify(res))
+        localStorage.setItem('num', 0)
+        onGetQuestion()
     };
+    const onGetQuestion = () => {
+        const listQestion = funcGetQuestionNow();
+        const number = Number(localStorage.getItem('num'));
+
+        lastNumberQusetion()
+        setMateri(listQestion)
+        setQuestion(listQestion.question[number])
+    }
     const backhome = async () => {
+        play()
         const res = await Swal.fire({
-            title: 'Yakin mau kembali?',
-            text: "Kamu tidak bisa menjawab soal ini lagi",
+            title: 'Yakin mau kembali ?',
+            text: "Kamu tidak bisa menjawab soal ini lagi dan nilai kamu akan terkirim",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -78,11 +77,50 @@ function Index() {
             confirmButtonText: 'Ga jadi'
         })
         if (!res.isConfirmed) {
+            removeSession()
             navigate('/');
         }
     }
+    const removeSession = () => {
+        localStorage.removeItem('num')
+        localStorage.removeItem('question-now')
+    }
+    const onAnswerButton = () => {
+        play()
+        if (activeSelect === null) {
+            Swal.fire({
+                text: "Pastikan kamu memilih jawaban nya dulu ya",
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Iya'
+            })
+            return;
+        }
+        const listQestion = funcGetQuestionNow()
+        const rer = Number(localStorage.getItem('num'));
+        localStorage.setItem('num', rer + 1);
+        if (Number(localStorage.getItem('num')) === listQestion.questionTotal) {
+            removeSession()
+            navigate("/user-score/" + listQestion.id)
+            return
+        }
+        setActiveSelect(null)
+        onGetQuestion()
+    }
+    const funcGetQuestionNow = () => {
+        return JSON.parse(localStorage.getItem('question-now'))
+    }
+    const lastNumberQusetion = () => {
+        const numb = funcGetQuestionNow()
+        const number = Number(localStorage.getItem('num'));
+        setLastNumbQuest(numb.questionTotal - (number + 1))
+    }
     useEffect(() => {
-        fetchQuestionUser();
+        if (!funcGetQuestionNow()) {
+            fetchQuestionUser();
+        } else {
+            onGetQuestion()
+        }
     }, []);
     return (
         <div className="leads">
@@ -96,22 +134,23 @@ function Index() {
                                 </svg>
                                 <p style={{ margin: '0 9px', cursor: 'pointer' }} onClick={backhome}>Kembali ke beranda</p>
                             </div>
-                            <p>{question.materi}</p>
-                            <p>Menjawab</p>
+                            <p>{materi.materi}</p>
+                            <p className="select-answer" onClick={onAnswerButton}>Menjawab</p>
                         </div>
                         <div className="image-answer">
-                            <img src="https://images.unsplash.com/photo-1598755257130-c2aaca1f061c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8d2lsZCUyMGFuaW1hbHxlbnwwfHwwfHw%3D&w=1000&q=80" alt="Animals" style={{ width: '100%', height: '320px' }} />
+                            <img src={question.image ? question.image : notImage} alt="Image Question" style={{ width: '100%', height: '320px' }} draggable="false" />
                             <div className="box-question">
-                                <p style={{ textAlign: 'left' }}>Apa nama hewan di atas?</p>
+                                <p style={{ textAlign: 'left' }}>{question.question}</p>
                             </div>
                             <div className="box-content">
-                                {answer.map((e, i) => (
+                                {question.listAnswer.map((e, i) => (
                                     <div className="box-content-answer" key={i} onClick={() => selectAnswer(i)}>
-                                        <p style={{ backgroundColor: e.awok ? 'blue' : '' }}>{e.name}</p>
+                                        <p style={{ backgroundColor: activeSelect === i ? 'blue' : '' }}>{e}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
+                        <p className="sisa-soal" > {lastNumbQuest ? `Sisa soal ${lastNumbQuest}` : 'Soal Terakhir'}</p>
                     </div>
                 ) : (
                     <LoadingComponent />
