@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import { setProfile } from '../../app/feature/connectSlice';
 import { questionMateriUser, getApi } from '../../app/fetchApi/connect';
 import { useNavigate, useParams } from 'react-router-dom';
-import { play } from '../../util/generateMusic';
+import { play, endAnswer } from '../../util/generateMusic';
 
 function Index() {
     const navigate = useNavigate()
@@ -100,8 +100,12 @@ function Index() {
         const rer = Number(localStorage.getItem('num'));
         localStorage.setItem('num', rer + 1);
         if (Number(localStorage.getItem('num')) === listQestion.questionTotal) {
+            setLoadQuestion(true)
             removeSession()
-            navigate("/user-score/" + listQestion.id)
+            endAnswer()
+            setTimeout(() => {
+                navigate("/user-score/" + listQestion.id)
+            }, 2500)
             return
         }
         setActiveSelect(null)
