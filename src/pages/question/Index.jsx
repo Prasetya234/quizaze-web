@@ -68,15 +68,16 @@ function Index() {
     };
     const backhome = async () => {
         const res = await Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            title: 'Yakin mau kembali?',
+            text: "Kamu tidak bisa menjawab soal ini lagi",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            cancelButtonText: 'Keluar',
+            confirmButtonText: 'Ga jadi'
         })
-        if (res.isConfirmed) {
+        if (!res.isConfirmed) {
             navigate('/');
         }
     }
@@ -101,7 +102,7 @@ function Index() {
                         <div className="image-answer">
                             <img src="https://images.unsplash.com/photo-1598755257130-c2aaca1f061c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8d2lsZCUyMGFuaW1hbHxlbnwwfHwwfHw%3D&w=1000&q=80" alt="Animals" style={{ width: '100%', height: '320px' }} />
                             <div className="box-question">
-                                <p onClick={selectAnswer}>Apa nama hewan di atas?</p>
+                                <p style={{ textAlign: 'left' }}>Apa nama hewan di atas?</p>
                             </div>
                             <div className="box-content">
                                 {answer.map((e, i) => (

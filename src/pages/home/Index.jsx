@@ -19,7 +19,7 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 import { imageCharacter } from '../../util/generateImage';
-import { play } from '../../util/generateMusic';
+import { play, readyAnswer } from '../../util/generateMusic';
 import { playm } from '../../app/feature/soundSlice';
 import ButtonLogin from '../../components/button/Index';
 import { setProfile } from '../../app/feature/connectSlice';
@@ -391,7 +391,10 @@ function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
   const navigator = useNavigate();
   const onSelectMateri = (id) => {
     play();
-    navigator(`/question/${id}`);
+    readyAnswer()
+    setTimeout(() => {
+      navigator(`/question/${id}`);
+    }, 2500);
   };
   return (
     <div className="school-modal">
