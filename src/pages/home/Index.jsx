@@ -204,6 +204,7 @@ function Index() {
       setChangeSchool(false);
       setModalProfile(true);
     } else {
+      findMateriByInput()
       setModalMateri(true);
     }
   };
