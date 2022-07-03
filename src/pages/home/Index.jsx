@@ -221,6 +221,7 @@ function Index() {
   const closeModalLogin = () => {
     play();
     setModalLogin(false);
+    setResFailLogin(false)
   };
   const loginAdmin = async (payload) => {
     setLoading(true);

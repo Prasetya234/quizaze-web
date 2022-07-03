@@ -5,15 +5,12 @@ import img3 from '../../assets/images/cetak3.png'
 import img1 from '../../assets/images/cetak.png'
 import img2 from '../../assets/images/cetak2.png'
 import Button from '../../components/button/Index';
-import { getUserScore, getApi } from '../../app/fetchApi/connect'
-import { setProfile } from '../../app/feature/connectSlice';
+import { getUserScore } from '../../app/fetchApi/connect'
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { play } from '../../util/generateMusic';
 
 function Index() {
     const { id } = useParams()
-    const dispatch = useDispatch()
     const navigator = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const [scoreUser, setScoreUser] = useState({ materi: { materi: '' }, score: 0, totalQuestionAnswer: 0, user: { username: '' } });
@@ -23,15 +20,8 @@ function Index() {
             window.history.pushState(null, "", window.location.href);
         };
     };
-    const fetchUserAuth = async () => {
-        const datauser = JSON.parse(localStorage.getItem('auth'));
-        const res = await getApi(datauser ? datauser.user.id : '');
-        if (!res) return;
-        dispatch(setProfile(res.user));
-    };
     const fetchUserScore = async () => {
         setIsLoading(true)
-        await fetchUserAuth()
         const res = await getUserScore(id)
         setIsLoading(false)
         if (!res) {
