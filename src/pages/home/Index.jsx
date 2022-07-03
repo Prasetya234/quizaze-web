@@ -247,9 +247,7 @@ function Index() {
   };
   const authenticateTeams = () => {
     const priv = localStorage.getItem('privacy');
-
     setPrivacy(priv ? true : false);
-    console.log(privacy);
   };
   const onChangeSchool = () => {
     setChangeSchool(true);
@@ -409,16 +407,14 @@ function Index() {
           Selamat datang di permainan Quizaze.
           ini adalah Website yang menyediakan quiz bagi pengguna
           <br />
-          {' '}
           Mulai bermain!
-          {' '}
         </p>
         <br />
         <ButtonLogin title="Main sekarang" action={playButton} />
       </div>
       <div className="footer">
         <p onClick={() => { play(); setModalLogin(true); }}>Admin Login</p>
-        <p onClick={wa}>Join School</p>
+        <p onClick={wa}>Join partner school</p>
       </div>
     </div>
   );
@@ -446,19 +442,23 @@ function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
       navigator(`/question/${item.id}`);
     }, 2500);
   };
+  const onShowScore = (item) => {
+    play()
+    navigator(`/user-score/${item.id}`);
+  }
   return (
     <div className="school-modal">
       <div className="school-modal-content">
         <Form.Control type="text" placeholder="Cari nama materi" onChange={(e) => findMateriByInput(e.target.value)} />
         <div className="school-modal-list_school">
           {listMateri.map((e, i) => (
-            <div className="daftar-school" key={i} onClick={() => onSelectMateri(e)}>
+            <div className="daftar-school" key={i} onClick={() => e.alreadyAnswer ? onShowScore(e) : onSelectMateri(e)}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p><b>{e.materi}</b></p>
-                <p>
+                {e.alreadyAnswer ? (<p style={{ color: 'black' }}>Sudah menjawab</p>) : (<p>
                   Total soal:
                   {e.questionTotal}
-                </p>
+                </p>)}
               </div>
               <p style={{ marginBottom: '5px' }}>
                 Guru:

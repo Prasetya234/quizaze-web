@@ -110,6 +110,32 @@ export const questionMateriUser = async (materiId) => {
   }
 };
 
+export const answerQuestionUser = async (payload) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.post(`${config.api.question}/${payload.materiId}/answer`, payload.data, { headers: config.getAuthHeader() }).then(be => be.data.data);
+  } finally {
+    return res;
+  }
+};
+
+export const getUserScore = async (materiId) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.get(`${config.api.userScore}/${config.getAuthId()}/${materiId}`, { headers: config.getAuthHeader() }).then(be => be.data.data);
+  } finally {
+    return res;
+  }
+};
+
 const offline = async () => {
   await Swal.fire(
     'Offline',

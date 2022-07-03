@@ -10,18 +10,19 @@ import './index.scss';
 import notImage from '../../assets/icon/not-image.png'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import LoadingGalaxy from '../../components/load-galaxy/Index';
 import { useDispatch } from 'react-redux';
 import { setProfile } from '../../app/feature/connectSlice';
-import { questionMateriUser, getApi } from '../../app/fetchApi/connect';
+import { questionMateriUser, getApi, answerQuestionUser } from '../../app/fetchApi/connect';
 import { useNavigate, useParams } from 'react-router-dom';
-import { play, endAnswer } from '../../util/generateMusic';
+import { play, endAnswer, playAnswerTrue, playAnswerFalse } from '../../util/generateMusic';
 
 function Index() {
+    const { id } = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const [activeSelect, setActiveSelect] = useState(null);
     const [lastNumbQuest, setLastNumbQuest] = useState(0);
-    const { id } = useParams();
     const [question, setQuestion] = useState({
         image: "",
         question: "",
@@ -85,7 +86,7 @@ function Index() {
         localStorage.removeItem('num')
         localStorage.removeItem('question-now')
     }
-    const onAnswerButton = () => {
+    const onAnswerButton = async () => {
         play()
         if (activeSelect === null) {
             Swal.fire({
@@ -98,6 +99,20 @@ function Index() {
         }
         const listQestion = funcGetQuestionNow()
         const rer = Number(localStorage.getItem('num'));
+        setLoadQuestion(true)
+        const res = await answerQuestionUser({ materiId: listQestion.question[rer].id, data: { answer: listQestion.question[rer].listAnswer[activeSelect] } });
+        setLoadQuestion(false)
+        if (!res) {
+            await Swal.fire({
+                icon: 'error',
+                text: `Sepertinya kamu telah mengerjaan quiz ini. kembali ke beranda`,
+                confirmButtonText: 'Iya'
+            })
+            removeSession()
+            navigate('/');
+            return
+        }
+        await trueOrFalseAnswer(res);
         localStorage.setItem('num', rer + 1);
         if (Number(localStorage.getItem('num')) === listQestion.questionTotal) {
             setLoadQuestion(true)
@@ -110,6 +125,23 @@ function Index() {
         }
         setActiveSelect(null)
         onGetQuestion()
+    }
+    const trueOrFalseAnswer = async (data) => {
+        if (data.correct) {
+            playAnswerTrue()
+            await Swal.fire({
+                text: "Hore... Jawaban kamu benar",
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Iya'
+            })
+        } else {
+            playAnswerFalse()
+            await Swal.fire({
+                icon: 'error',
+                text: `Oh tidak... jawaban yang benar adalah ${data.question.answerTrue}`,
+            })
+        }
     }
     const funcGetQuestionNow = () => {
         return JSON.parse(localStorage.getItem('question-now'))
@@ -157,34 +189,12 @@ function Index() {
                         <p className="sisa-soal" > {lastNumbQuest ? `Sisa soal ${lastNumbQuest}` : 'Soal Terakhir'}</p>
                     </div>
                 ) : (
-                    <LoadingComponent />
+                    <LoadingGalaxy />
                 )
             }
         </div>
     );
 }
 
-function LoadingComponent() {
-    return (
-        <div>
-            <div className="content">
-                <div className="planet">
-                    <div className="ring" />
-                    <div className="cover-ring" />
-                    <div className="spots">
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                    </div>
-                </div>
-                <p>loading</p>
-            </div>
-        </div>
-    );
-}
 
 export default Index;

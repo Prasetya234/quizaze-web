@@ -23,6 +23,21 @@
     color: #61dafb;
   }
 }
+@media print {
+  html,
+  body {
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+  }
+  #content {
+    display: none;
+  }
+  #content-screen {
+    display: block;
+  }
+}
 
 .overflow-hidden {
   overflow: hidden;
