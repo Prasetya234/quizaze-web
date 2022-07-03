@@ -65,7 +65,7 @@ function Index() {
 
   const wa = () => {
     play();
-    window.open('https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%menyengakan');
+    window.open('https://api.whatsapp.com/send?phone=089504731540&text=Hallo%20kak%20saya%20ingin%20bergabung%20di%20Quizaze.%20supaya%20pembelajaran%20di%20sekolah%20kami%20jadi%20lebih%20menyengakan');
   };
   const aktivSuara = () => {
     play();
@@ -241,8 +241,8 @@ function Index() {
   const playButton = () => {
     play();
     if (profile.school) {
-      setModalMateri(true);
       findMateriByInput();
+      setModalMateri(true);
     } else {
       funcSetModalActive();
     }
@@ -461,14 +461,13 @@ function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
             <div className="daftar-school" key={i} onClick={() => e.alreadyAnswer ? onShowScore(e) : onSelectMateri(e)}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <p><b>{e.materi}</b></p>
-                {e.alreadyAnswer ? (<p style={{ color: 'black' }}>Sudah menjawab</p>) : (<p>
+                {e.alreadyAnswer ? (<p style={{ color: 'orange' }}>Sudah menjawab</p>) : (<p>
                   Total soal:
                   {e.questionTotal}
                 </p>)}
               </div>
               <p style={{ marginBottom: '5px' }}>
-                Guru:
-                {e.teacher}
+                Guru:&nbsp;{e.teacher}
               </p>
             </div>
           ))}

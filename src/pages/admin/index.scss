@@ -40,8 +40,14 @@ $bg: #252429;
 
 .konten {
   display: flex;
+
   &-left {
     width: 30%;
+    @media screen and (max-width: 900px) {
+      width: 95%;
+      display: flex;
+      justify-content: space-between;
+    }
     .text {
       margin: 35px 0px;
       text-align: left;
@@ -60,9 +66,51 @@ $bg: #252429;
   &-right {
     border: 1px solid;
     width: 70%;
+    @media screen and (max-width: 900px) {
+      height: 100px;
+      width: 95%;
+    }
+  }
+  @media screen and (max-width: 900px) {
+    flex-direction: column-reverse;
   }
 }
 .button {
   margin: 20px 0px;
   text-align: left;
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid #cc6633;
+  padding: 5px 10px;
+  margin: 10px 0;
+  outline: none;
+  font-size: 18px;
+  width: 90%;
+  &:focus {
+    border-bottom: 1px solid #7ff511;
+  }
+}
+[placeholder]:focus::-webkit-input-placeholder {
+  transition: text-indent 0.4s 0.4s ease;
+  text-indent: -100%;
+  opacity: 1;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  border: none;
+  border-bottom: 1px solid #cc6633;
+  padding: 5px 10px;
+  outline: none;
+}
+input[type='number']:focus {
+  border-bottom: 1px solid #7ff511;
 }

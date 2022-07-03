@@ -17,6 +17,7 @@ import Admin from './pages/admin/Index';
 import Question from './pages/question/Index';
 import Stars from './components/stars/Index';
 import NotFound from './pages/404/Index';
+import EditQuestion from './pages/edit-question/Index'
 import Modal from './components/modal/Modal';
 
 import { play } from './util/generateMusic';
@@ -65,6 +66,7 @@ function App() {
               <Route path="/question/:id" element={<Question />} />
               <Route path="/user-score/:id" element={<Congrats />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/materi-update/:id" element={<EditQuestion />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
@@ -91,7 +93,7 @@ function AbautMe() {
         </div>
       </div>
       <p style={{ fontWeight: 'bold', marginBottom: '0px', fontSize: '20px' }}>Tujuan :</p>
-      <p>Quizaze adalah website yang menyediakan soal yang menarik untuk kamu yang suka malas-malasan untuk mengerhakan tugas sekolah</p>
+      <p>Quizaze adalah website yang menyediakan soal yang menarik untuk kamu yang cepat bosan dalam mengerjakan tugas-tugas sekolah</p>
       <p style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '20px' }}>Developer</p>
       <p>
         <span onClick={() => window.open('https://www.instagram.com/xzy_prasetya/')}>Prasetya Dhany Putra</span>

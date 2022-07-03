@@ -123,6 +123,19 @@ export const answerQuestionUser = async (payload) => {
   }
 };
 
+export const updateSchoolInfo = async (payload) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.put(`${config.api.school}/${config.getAuthId()}/${payload.schoolId}`, payload.data, { headers: config.getAuthHeader() }).then(be => be.data.data);
+  } finally {
+    return res;
+  }
+};
+
 export const getUserScore = async (materiId) => {
   let res = null;
   if (!navigator.onLine) {
