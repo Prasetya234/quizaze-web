@@ -1,6 +1,6 @@
 # Quizaze application
 
-Sistem untuk keperluan Prapelajar dan Leads Management
+Sistem untuk keperluan Prapelajar
 
 - `npm install`
 - `npm start`
