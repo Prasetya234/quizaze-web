@@ -1,6 +1,6 @@
 # Quizaze application
 
-Sistem untuk keperluan Prapelajar
+Sistem untuk keperluan website belajar
 
 - `npm install`
 - `npm start`
