@@ -55,7 +55,7 @@ function Index() {
                         <img src={img3} alt="logo" className="image2" draggable="false" />
                     </div>
                     <div className="message-answer">
-                        <p>Selamat, {scoreUser.user.username}. Kamu telah menyelesaikan soal {scoreUser.materi.materi} dengan kamu menjawab soal sebanyak {scoreUser.totalQuestionAnswer}. Nilai kamu adalah {scoreUser.score}. <br /> <span id="content">Terimakasih Telah menyelesaikan soal ini</span></p>
+                        <p>Selamat, <b>{scoreUser.user.username}</b>. Kamu telah menyelesaikan soal {scoreUser.materi.materi} dengan kamu menjawab soal sebanyak {scoreUser.totalQuestionAnswer}. Nilai kamu adalah <b style={{ color: scoreUser.score >= 65 ? 'blue' : 'red' }}>{scoreUser.score + 1}</b>. <br /> <span id="content">Terima kasih telah menyelesaikan soal ini</span></p>
                         <div className="button" id="content">
                             <Button title="Kembali ke beranda" action={() => { play(); navigator('/') }} />
                         </div>

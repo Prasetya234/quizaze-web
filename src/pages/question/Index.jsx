@@ -67,9 +67,10 @@ function Index() {
     }
     const backhome = async () => {
         play()
+        const number = Number(localStorage.getItem('num'));
         const res = await Swal.fire({
             title: 'Yakin mau kembali ?',
-            text: "Kamu tidak bisa menjawab soal ini lagi dan nilai kamu akan terkirim",
+            text: `${!number ? '' : 'Kamu tidak bisa menjawab soal ini lagi dan nilai kamu akan terkirim'}  `,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

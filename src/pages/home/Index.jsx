@@ -99,6 +99,10 @@ function Index() {
     const res = await getApi(datauser ? datauser.user.id : '');
     setLoading(false);
     if (!res) return;
+    if (!datauser ? '' : datauser.user.roles.find((item) => item === 'ADMIN_SCHOOL' || item === 'ADMIN')) {
+      navigator('/admin')
+      return;
+    }
     dispatch(setProfile(res.user));
     setTimeout(() => {
       checkingAlreadyQuestion()
@@ -229,6 +233,7 @@ function Index() {
     if (!res) {
       setResFailLogin(true);
     } else {
+      localStorage.setItem('auth', JSON.stringify(res))
       navigator('/admin');
     }
     setLoading(false);
