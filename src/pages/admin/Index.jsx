@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import React, { useState, useEffect } from "react";
 import { play } from '../../util/generateMusic';
-import { getApi, updateSchoolInfo, searchMateriUser } from '../../app/fetchApi/connect';
+import { getApi, updateSchoolInfo, searchMateriUser, getUserTrafficRecap } from '../../app/fetchApi/connect';
 import {
-    Spinner, Form,
+    Spinner, Form, Button
 } from 'react-bootstrap';
 
+import LineGraph from "../../components/diagram/LineGraph";
 import LoadingGalaxy from '../../components/load-galaxy/Index';
 import Modal from '../../components/modal/Modal';
 import ButtonComponent from '../../components/button/Index'
@@ -150,24 +151,40 @@ function LeftContent({ school, fetchAuth }) {
 }
 
 function RightContent() {
-
+    const [loading, setLoading] = useState(false)
+    const [labels, setLabsels] = useState([])
+    const [data, setData] = useState([])
+    const fetchTrafficMethod = async () => {
+        setLoading(true)
+        const res = await getUserTrafficRecap()
+        console.log(res);
+        const labels = []
+        const datas = []
+        res.forEach(e => {
+            labels.push(e.thisDate)
+            datas.push(e.visitors)
+        });
+        setLabsels(labels)
+        setData(datas)
+        setLoading(false)
+    }
+    useEffect(() => {
+        fetchTrafficMethod()
+    }, [])
     return (
         <div className="konten-right">
-            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <img src="..." class="rounded me-2" alt="..." />
-                    <strong class="me-auto">Bootstrap</strong>
-                    <small>11 mins ago</small>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="toast"
-                        aria-label="Close"
-                    ></button>
-                </div>
-                <div class="toast-body">Hello, world! This is a toast message.</div>
-            </div>
-
+            {loading ? (<Button variant="primary" disabled>
+                <Spinner
+                    as="span"
+                    animation="grow"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                />
+                Loading...
+            </Button>) : (
+                <LineGraph labels={labels} datas={data} />
+            )}
         </div>
     )
 }

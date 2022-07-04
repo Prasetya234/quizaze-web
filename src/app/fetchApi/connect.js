@@ -149,6 +149,19 @@ export const getUserScore = async (materiId) => {
   }
 };
 
+export const getUserTrafficRecap = async (materiId) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.get(`${config.api.traffic}/perday`, { headers: config.getAuthHeader() }).then(be => be.data.data.content);
+  } finally {
+    return res;
+  }
+};
+
 const offline = async () => {
   await Swal.fire(
     'Offline',

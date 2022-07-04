@@ -8,6 +8,7 @@ const api = {
   user: `${BASE_PATH_V1}/api/user`,
   userScore: `${BASE_PATH_V1}/api/user-score`,
   connect: `${BASE_PATH_V1}/api/trafic-global-user/connect`,
+  traffic: `${BASE_PATH_V1}/api/admin/traffic-user/list`,
   login: `${BASE_PATH_V1}/api/login`,
 };
 const getAuthHeader = () => {
@@ -24,19 +25,18 @@ const getAuthId = () => {
 const serializeQueryParams = (paramObj) => {
   if (paramObj) {
     return (
-      `?${
-        Object.keys(paramObj)
-          .map((k) => {
-            if (typeof paramObj[k] === 'object') {
-              return paramObj[k]
-                .map((v) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-                .join('&');
-            }
-            return `${encodeURIComponent(k)}=${encodeURIComponent(
-              paramObj[k],
-            )}`;
-          })
-          .join('&')}`
+      `?${Object.keys(paramObj)
+        .map((k) => {
+          if (typeof paramObj[k] === 'object') {
+            return paramObj[k]
+              .map((v) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+              .join('&');
+          }
+          return `${encodeURIComponent(k)}=${encodeURIComponent(
+            paramObj[k],
+          )}`;
+        })
+        .join('&')}`
     );
   }
   return '';

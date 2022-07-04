@@ -64,10 +64,12 @@ $bg: #252429;
     }
   }
   &-right {
-    border: 1px solid;
+    border-radius: 10px;
+    background-color: rgb(206, 206, 206);
     width: 70%;
+    padding: 30px;
     @media screen and (max-width: 900px) {
-      height: 100px;
+      height: 400px;
       width: 95%;
     }
   }
