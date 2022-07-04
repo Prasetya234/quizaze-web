@@ -437,7 +437,7 @@ function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      cancelButtonText: 'Cancle',
+      cancelButtonText: 'Cancel',
       confirmButtonText: 'Mulai'
     })
     if (!res.isConfirmed) {
