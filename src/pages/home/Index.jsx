@@ -9,7 +9,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import {
-  Button, OverlayTrigger, Tooltip, Spinner, Form, InputGroup,
+  Button, OverlayTrigger, Tooltip, Spinner, Form, InputGroup, Alert
 } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -263,7 +263,6 @@ function Index() {
     funcSetModalActive();
   };
   useEffect(() => {
-
     authenticateTeams();
     fetchUserAuth();
   }, []);
@@ -502,8 +501,9 @@ function LoginAdminPage({
     <div className="login">
       <p className="title">Login Admin</p>
       <Form noValidate validated={validate} className="form" onSubmit={checkingLogin}>
-        {failLog && <p className="fail-login">Username atau Password salah</p>}
-
+        {failLog && <Alert variant="danger" style={{ width: '100%', textAlign: 'center' }}>
+          Username atau Password salah
+        </Alert>}
         <Form.Group controlId="validationCustomUsername" style={{ marginBottom: '10px', width: '100%' }}>
           <Form.Label>Username</Form.Label>
           <InputGroup hasValidation>

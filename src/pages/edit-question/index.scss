@@ -1,0 +1,101 @@
+.info-materi {
+  position: relative;
+  width: 150px;
+  &-content {
+    position: absolute;
+    button {
+      background-color: orange;
+      border: none;
+      padding: 6px 20px;
+      width: 130px;
+      margin: 20px 0px;
+      border-radius: 10px;
+      &:hover {
+        background-color: rgb(255, 243, 68);
+      }
+    }
+  }
+}
+
+.update {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  height: 500px;
+  &-left {
+    width: 25%;
+  }
+  &-right {
+    display: flex;
+    border-radius: 8px;
+    justify-content: center;
+    width: 60%;
+  }
+}
+.question-list {
+  height: 80vh;
+  overflow-y: auto;
+  background-color: rgb(189, 179, 179);
+  font-size: 18px;
+  border-radius: 10px;
+  width: 90%;
+  padding: 20px;
+  margin: auto;
+  &-page {
+    cursor: pointer;
+    height: 50px;
+    border-radius: 8px;
+    background-color: gray;
+    color: rgb(235, 228, 228);
+    position: relative;
+    p {
+      margin: 12px 0px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 10px 8px;
+    }
+    &:hover {
+      color: black;
+      background-color: aquamarine;
+    }
+  }
+  .position {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+  }
+}
+.footer-edit {
+  display: flex;
+  font-size: 18px;
+  position: absolute;
+  bottom: -10px;
+  width: 95%;
+  justify-content: space-between;
+}
+.quest {
+  width: 80%;
+  &-image {
+    width: 100%;
+    height: 280px;
+  }
+}
+.answer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  padding: 20px 10px;
+  button {
+    width: 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 10px 5px;
+    background-color: coral;
+    margin: 10px 30px;
+  }
+}

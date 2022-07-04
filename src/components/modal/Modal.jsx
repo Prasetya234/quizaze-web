@@ -10,7 +10,7 @@ const Modal = (props) => {
   return (
     <>{active ? (
       <div className="modal-mask" id="modal" onClick={(e) => {
-        if (e.target.id == "modal") props.close()
+        if (e.target.id === "modal") props.close()
       }}>
         <div className="modal-wrapper">
           <div className="modal-dialog" >

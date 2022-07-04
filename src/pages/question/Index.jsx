@@ -175,7 +175,7 @@ function Index() {
                             <p className="select-answer" onClick={onAnswerButton}>Menjawab</p>
                         </div>
                         <div className="image-answer">
-                            <img src={question.image ? question.image : notImage} alt="Image Question" style={{ width: '100%', height: '320px' }} draggable="false" />
+                            <img src={question.image ? question.image : notImage} alt="img question" style={{ width: '100%', height: '320px' }} draggable="false" />
                             <div className="box-question">
                                 <p style={{ textAlign: 'left' }}>{question.question}</p>
                             </div>

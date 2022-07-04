@@ -1,5 +1,6 @@
 import "./index.scss"
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import React, { useState, useEffect } from "react";
 import { play } from '../../util/generateMusic';
 import { getApi, updateSchoolInfo, searchMateriUser } from '../../app/fetchApi/connect';
@@ -149,8 +150,23 @@ function LeftContent({ school, fetchAuth }) {
 }
 
 function RightContent() {
+
     return (
         <div className="konten-right">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <img src="..." class="rounded me-2" alt="..." />
+                    <strong class="me-auto">Bootstrap</strong>
+                    <small>11 mins ago</small>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="toast-body">Hello, world! This is a toast message.</div>
+            </div>
 
         </div>
     )
@@ -183,7 +199,17 @@ function Index() {
         fetchUserAuth()
 
     }
-    const logOut = () => {
+    const logOut = async () => {
+        play()
+        const res = await Swal.fire({
+            showCancelButton: true,
+            confirmButtonText: 'Keluar',
+            text: 'Satu langkah lagi untuk keluar',
+            icon: 'question'
+        })
+        if (!res.isConfirmed) {
+            return
+        }
         localStorage.removeItem('auth')
         navigator('/')
     }
