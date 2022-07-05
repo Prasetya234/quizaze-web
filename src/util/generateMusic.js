@@ -1,11 +1,11 @@
-// import music from '../assets/audio/zapsplat_multimedia_cell_phone_smart_screen_button_press_click_feedback_003_60932.mp3';
+import music from '../assets/audio/zapsplat_multimedia_cell_phone_smart_screen_button_press_click_feedback_003_60932.mp3';
 import musicStart from '../assets/audio/start-answer.wav'
 import musicEnd from '../assets/audio/end-answer.wav'
 import trueAnswer from '../assets/audio/true-answer.wav'
 import wrongAnswer from '../assets/audio/wrong-answer.wav'
 
 export function play() {
-  new Audio("https://www.mboxdrive.com/zapsplat_multimedia_cell_phone_smart_screen_button_press_click_feedback_003_60932.mp3").play();
+  new Audio("https://www.mboxdrive.com/zapsplat_multimedia_cell_phone_smart_screen_button_press_click_feedback_003_60932.mp3" || music).play();
 }
 
 export function readyAnswer() {

@@ -125,15 +125,15 @@ function LeftContent({ school, fetchAuth }) {
             <div>
                 <div className="text">
                     <p>Kepala Sekolah: </p>
-                    <p className="info">{school.headMaster}</p>
+                    <p className="info">{school.headMaster ? school.headMaster : 'Null'}</p>
                 </div>
                 <div className="text">
                     <p>Phone:</p>
-                    <p className="info">{school.phoneNumber}</p>
+                    <p className="info">{school.phoneNumber ? school.phoneNumber : 'Null'}</p>
                 </div>
                 <div className="text">
                     <p>Alamat:</p>
-                    <p className="info">{school.address}</p>
+                    <p className="info">{school.address ? school.address : 'Null'}</p>
                 </div>
             </div>
             <div>
@@ -253,7 +253,7 @@ function Index() {
             {isLoading ? <LoadingGalaxy /> : (<div className="admin-page">
                 <div className="admin-page-head">
                     <button onClick={logOut}>Logout</button>
-                    <p><b>{school.name}</b></p>
+                    <p><b>{school.name ? school.name : 'Null'}</b></p>
                     <p>{new Date().toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
                 <div className="konten">
