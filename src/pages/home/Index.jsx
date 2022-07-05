@@ -99,10 +99,6 @@ function Index() {
     const res = await getApi(datauser ? datauser.user.id : '');
     setLoading(false);
     if (!res) return;
-    if (!datauser ? '' : datauser.user.roles.find((item) => item === 'ADMIN_SCHOOL' || item === 'ADMIN')) {
-      navigator('/admin')
-      return;
-    }
     dispatch(setProfile(res.user));
     setTimeout(() => {
       checkingAlreadyQuestion()
@@ -190,6 +186,7 @@ function Index() {
       setChangeSchool(false);
       setModalProfile(true);
     } else {
+      findMateriByInput()
       setModalMateri(true);
     }
   };
@@ -241,6 +238,11 @@ function Index() {
   };
   const playButton = () => {
     play();
+    const datauser = JSON.parse(localStorage.getItem('auth'));
+    if (!datauser ? '' : datauser.user.roles.find((item) => item === 'ADMIN_SCHOOL' || item === 'ADMIN')) {
+      navigator('/admin')
+      return;
+    }
     if (profile.school) {
       findMateriByInput();
       setModalMateri(true);
@@ -262,6 +264,10 @@ function Index() {
     play();
     funcSetModalActive();
   };
+  const funcAdminLogin = () => {
+    play();
+    setModalLogin(true);
+  }
   useEffect(() => {
     authenticateTeams();
     fetchUserAuth();
@@ -359,12 +365,12 @@ function Index() {
               <div>
                 <input type="text" placeholder="Username" autoFocus value={profileEditData.username} onChange={((e) => setProfileEditData({ ...profileEditData, username: e.target.value }))} />
                 <input type="text" placeholder="Email" autoFocus value={profileEditData.email} onChange={((e) => setProfileEditData({ ...profileEditData, email: e.target.value }))} />
-                <p style={{ fontSize: '15px', marginTop: '10px' }}>
+                {JSON.parse(localStorage.getItem('auth')).user.roles.find((item) => item !== 'ADMIN_SCHOOL') && <p style={{ fontSize: '15px', marginTop: '10px' }} >
                   {profile.school ? profile.school.name : 'Belum memilih sekolah'}
-                  {' '}
+
                   &nbsp;
                   <span className="profile-modal-edit" onClick={onChangeSchool}>{profile.school ? 'Ganti Sekolah' : 'Pilih Sekolah'}</span>
-                </p>
+                </p>}
               </div>
             )}
           </div>
@@ -419,7 +425,7 @@ function Index() {
         <ButtonLogin title="Main sekarang" action={playButton} />
       </div>
       <div className="footer">
-        <p onClick={() => { play(); setModalLogin(true); }}>Admin Login</p>
+        <p onClick={funcAdminLogin}>Admin Login</p>
         <p onClick={wa}>Join partner school</p>
       </div>
     </div>

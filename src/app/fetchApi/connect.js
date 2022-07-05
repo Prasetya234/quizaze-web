@@ -149,7 +149,7 @@ export const getUserScore = async (materiId) => {
   }
 };
 
-export const getUserTrafficRecap = async (materiId) => {
+export const getUserTrafficRecap = async () => {
   let res = null;
   if (!navigator.onLine) {
     await offline();
@@ -157,6 +157,19 @@ export const getUserTrafficRecap = async (materiId) => {
   }
   try {
     res = await axios.get(`${config.api.traffic}/perday`, { headers: config.getAuthHeader() }).then(be => be.data.data.content);
+  } finally {
+    return res;
+  }
+};
+
+export const getAdminMateri = async (materiId) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.get(`${config.api.question}/${materiId}/admin`, { headers: config.getAuthHeader() }).then(be => be.data.data);
   } finally {
     return res;
   }

@@ -138,7 +138,7 @@ function LeftContent({ school, fetchAuth }) {
             </div>
             <div>
                 <div className="button">
-                    <ButtonComponent title="Edit Profile" action={onEditProfile} />
+                    <ButtonComponent title="Edit Profile Sekolah" action={onEditProfile} />
                 </div>
                 <div className="button">
                     <ButtonComponent title="Lihat Materi" action={showMateri} />
@@ -227,7 +227,6 @@ function Index() {
         if (!res.isConfirmed) {
             return
         }
-        localStorage.removeItem('auth')
         navigator('/')
     }
     useEffect(() => {
