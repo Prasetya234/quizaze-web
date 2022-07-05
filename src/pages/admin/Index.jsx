@@ -157,7 +157,6 @@ function RightContent() {
     const fetchTrafficMethod = async () => {
         setLoading(true)
         const res = await getUserTrafficRecap()
-        console.log(res);
         const labels = []
         const datas = []
         res.forEach(e => {
@@ -214,7 +213,9 @@ function Index() {
             return;
         }
         fetchUserAuth()
-
+        setTimeout(() => {
+            goBackQuestionEdited()
+        }, 3000)
     }
     const logOut = async () => {
         play()
@@ -228,6 +229,21 @@ function Index() {
             return
         }
         navigator('/')
+    }
+    const goBackQuestionEdited = async () => {
+        const res = JSON.parse(localStorage.getItem('question-edit'))
+        if (!res) return
+        const confirm = await Swal.fire({
+            showCancelButton: true,
+            confirmButtonText: 'Lanjutin',
+            text: `Sepertinya kamu masih melakukan perubahan di materi ${res.materi}. Mau di lanjutkan?`,
+            icon: 'info'
+        })
+        if (!confirm.isConfirmed) {
+            localStorage.removeItem('question-edit')
+            return
+        }
+        navigator(`/materi-update/${res.id}`)
     }
     useEffect(() => {
         getSchoolInformation()
