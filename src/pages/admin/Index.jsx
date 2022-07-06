@@ -144,32 +144,12 @@ function LeftContent({ school, fetchAuth }) {
                     <ButtonComponent title="Lihat Materi" action={showMateri} />
                 </div>
             </div>
-
             <p className="id">{school.id}</p>
         </div>
     )
 }
 
-function RightContent() {
-    const [loading, setLoading] = useState(false)
-    const [labels, setLabsels] = useState([])
-    const [data, setData] = useState([])
-    const fetchTrafficMethod = async () => {
-        setLoading(true)
-        const res = await getUserTrafficRecap()
-        const labels = []
-        const datas = []
-        res.forEach(e => {
-            labels.push(e.thisDate)
-            datas.push(e.visitors)
-        });
-        setLabsels(labels)
-        setData(datas)
-        setLoading(false)
-    }
-    useEffect(() => {
-        fetchTrafficMethod()
-    }, [])
+function RightContent({ data, lebels, loading }) {
     return (
         <div className="konten-right">
             {loading ? (<Button variant="primary" disabled>
@@ -182,7 +162,7 @@ function RightContent() {
                 />
                 Loading...
             </Button>) : (
-                <LineGraph labels={labels} datas={data} />
+                <LineGraph labels={lebels} datas={data} />
             )}
         </div>
     )
@@ -191,11 +171,28 @@ function RightContent() {
 function Index() {
     const [isLoading, setLoading] = useState(false)
     const navigator = useNavigate();
+    const [loading, setIsLoading] = useState(false)
+    const [labels, setLabsels] = useState([])
+    const [data, setData] = useState([])
+    const fetchTrafficMethod = async () => {
+        setIsLoading(true)
+        const res = await getUserTrafficRecap()
+        const labels = []
+        const datas = []
+        res.forEach(e => {
+            labels.push(e.thisDate)
+            datas.push(e.visitors)
+        });
+        setLabsels(labels)
+        setData(datas)
+        setIsLoading(false)
+    }
     const fetchUserAuth = async () => {
         setLoading(true);
         const datauser = JSON.parse(localStorage.getItem('auth'));
         const res = await getApi(datauser ? datauser.user.id : '');
         setLoading(false);
+        fetchTrafficMethod()
         if (!res) return;
         setSchool(res.user.school)
     };
@@ -258,7 +255,7 @@ function Index() {
                 </div>
                 <div className="konten">
                     <LeftContent school={school} fetchAuth={fetchUserAuth} />
-                    <RightContent />
+                    <RightContent data={data} lebels={labels} loading={loading} />
                 </div>
             </div>)}
         </>
