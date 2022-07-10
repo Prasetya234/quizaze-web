@@ -175,6 +175,21 @@ export const getAdminMateri = async (materiId) => {
   }
 };
 
+export const setAdminMateri = async (pyload) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.put(`${config.api.question}/${pyload.materiId}/admin`, pyload.data, { headers: config.getAuthHeader() }).then(be => be.data.data);
+  } catch {
+    res = null
+  } finally {
+    return res;
+  }
+};
+
 const offline = async () => {
   await Swal.fire(
     'Offline',

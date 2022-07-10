@@ -36,6 +36,7 @@ import Music from '../../components/music-player/Index';
 import Modal from '../../components/modal/Modal';
 
 import './index.scss';
+import { convertBase64 } from '../../util/convertBase64';
 
 function Index() {
   const navigator = useNavigate();
@@ -131,16 +132,7 @@ function Index() {
     const base64 = await convertBase64(file);
     setImage(base64);
   };
-  const convertBase64 = (file) => new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onload = () => {
-      resolve(fileReader.result);
-    };
-    fileReader.onerror = (error) => {
-      reject(error);
-    };
-  });
+
   const saveProfileUser = async () => {
     if (!profileEditData.username) {
       alert('Username ga boleh kosong');

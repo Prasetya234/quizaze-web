@@ -1,13 +1,20 @@
 import './index.scss'
 
+import Swal from "sweetalert2"
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Spinner } from 'react-bootstrap'
+
 import { play } from '../../util/generateMusic'
 import { getApi, getAdminMateri } from '../../app/fetchApi/connect'
 import LoadingGalaxy from '../../components/load-galaxy/Index'
 import notImage from '../../assets/icon/not-image.png'
-import Swal from "sweetalert2"
 import Modal from '../../components/modal/Modal'
+import { setQuestionSession, getAuthorize, getQuestionList } from '../../util/session'
+
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../firebase';
+import { saveQuestion } from '../../service/update-questoin'
 
 export default function Index() {
     const { id } = useParams()
@@ -39,76 +46,73 @@ export default function Index() {
     }
     const onGetDataQustion = async () => {
         setLoading(true)
-        const datauser = getSessionuser();
+        const datauser = getAuthorize();
         setSchoolId(datauser.user.school.id)
-        if (!getQuestionName()) {
-            await getApi(datauser.user.id)
+        await getApi(datauser.user.id)
+        if (!getQuestionList()) {
             const res = await getAdminMateri(id);
-            localStorage.setItem('question-edit', JSON.stringify(res))
+            if (!res) {
+                navigator("/not-found")
+                return
+            }
+            setQuestionSession(res)
         }
         settingDataQuestion()
         setLoading(false)
     }
     const settingDataQuestion = () => {
-        const res = getQuestionName()
+        const res = getQuestionList()
         setMateri(res)
         setQuestions(res.question)
     }
-    const getSessionuser = () => {
-        return JSON.parse(localStorage.getItem('auth'))
-    }
-    const getQuestionName = () => {
-        return JSON.parse(localStorage.getItem('question-edit'))
-    }
     const selectNumberQuestion = (index) => {
-        play()
         setNumbSelect(index)
         setQuestionSelect(questions[index])
     }
     const openModalSetMateri = () => {
         play()
-        setModalMateri(true)
         settingDataQuestion()
+        setModalMateri(true)
     }
     const updateListQuestion = (data, idx) => {
-        const session = getQuestionName()
+        const session = getQuestionList()
         session.question[numbSelect] = {
+            ...session.question[numbSelect],
             answerTrue: idx !== null ? data[idx] : session.question[numbSelect].answerTrue,
-            image: session.question[numbSelect].image,
-            question: session.question[numbSelect].question,
-            countUsed: session.question[numbSelect].countUsed,
-            id: session.question[numbSelect].id,
             listAnswer: data
         }
-        localStorage.setItem('question-edit', JSON.stringify(session))
+        setQuestionSession(session)
         settingDataQuestion()
-        if (idx !== null) {
-            window.location.reload()
+        selectNumberQuestion(numbSelect)
+    }
+    const onChaneImageQuestion = (image) => {
+        const session = getQuestionList()
+        session.question[numbSelect] = {
+            ...session.question[numbSelect],
+            image: image
         }
+        setQuestionSession(session)
+        settingDataQuestion()
     }
     const updateMateriName = (question) => {
-        const session = getQuestionName()
+        const session = getQuestionList()
         session.question[numbSelect] = {
-            answerTrue: session.question[numbSelect].answerTrue,
-            image: session.question[numbSelect].image,
-            question: question,
-            countUsed: session.question[numbSelect].countUsed,
-            id: session.question[numbSelect].id,
-            listAnswer: session.question[numbSelect].listAnswer
+            ...session.question[numbSelect],
+            question: question
         }
-        localStorage.setItem('question-edit', JSON.stringify(session))
-        window.location.reload()
+        setQuestionSession(session)
+        settingDataQuestion()
     }
     const onRemoveFunction = async (index) => {
         play()
-        const session = getQuestionName()
+        const session = getQuestionList()
         session.question.splice(index, 1)
-        localStorage.setItem('question-edit', JSON.stringify(session))
-        window.location.reload()
+        setQuestionSession(session)
+        settingDataQuestion()
     }
     const addQuestionUser = () => {
         play()
-        const session = getQuestionName()
+        const session = getQuestionList()
         session.question.push({
             answerTrue: '',
             image: '',
@@ -120,6 +124,30 @@ export default function Index() {
         localStorage.setItem('question-edit', JSON.stringify(session))
         settingDataQuestion()
     }
+    const onSaveQuestionUpdated = async () => {
+        play()
+        setLoading(true)
+        const res = await saveQuestion(id)
+        if (!res) {
+            await Swal.fire({
+                icon: 'error',
+                text: 'Seperti nya ada yang salah. Restart ulang Soal kamu ya',
+            })
+            localStorage.removeItem('question-edit')
+            window.location.reload()
+        } else {
+            await Swal.fire({
+                text: 'Soal kamu berhasil diperbarui. kembali ke beranda',
+                icon: 'success'
+            })
+            localStorage.removeItem('question-edit')
+            navigator("/admin")
+        }
+        setLoading(false)
+    }
+    useEffect(() => {
+        selectNumberQuestion(numbSelect < questions.length ? numbSelect : numbSelect - 1)
+    }, [questions])
     useEffect(() => {
         onGetDataQustion()
     }, [])
@@ -148,7 +176,7 @@ export default function Index() {
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                     </svg>
                                 </button>
-                                <button>
+                                <button onClick={onSaveQuestionUpdated}>
                                     Simpan
                                 </button>
                             </div>
@@ -157,7 +185,7 @@ export default function Index() {
                     <div className="update">
                         <div className="update-left">
                             <div className="question-list">
-                                {questions.map((e, i) => (<div className="question-list-page" key={i} title={e.question} onClick={() => selectNumberQuestion(i)} style={numbSelect === i ? {
+                                {questions.map((e, i) => (<div className="question-list-page" key={i} title={e.question} onClick={() => { play(); selectNumberQuestion(i) }} style={numbSelect === i ? {
                                     color: "black",
                                     backgroundColor: "aquamarine"
                                 } : {}}>
@@ -170,7 +198,7 @@ export default function Index() {
                                 </div>))}
                             </div>
                         </div>
-                        <RightContent datas={questionSelect} modify={updateListQuestion} updateQuestion={updateMateriName} />
+                        <RightContent datas={questionSelect} modify={updateListQuestion} updateQuestion={updateMateriName} uploadImage={onChaneImageQuestion} />
                     </div>
                     <div className="footer-edit">
                         <p>{schoolId}</p>
@@ -182,7 +210,7 @@ export default function Index() {
 }
 
 
-function RightContent({ datas, modify, updateQuestion }) {
+function RightContent({ datas, modify, updateQuestion, uploadImage }) {
     const [data, setData] = useState(null);
     const [modal, setModal] = useState(false)
     const [modalQuestion, setModalQuestion] = useState(false)
@@ -191,6 +219,8 @@ function RightContent({ datas, modify, updateQuestion }) {
     const [answerTrue, setAnswerTrue] = useState(null)
     const [numbSelect, setNumbSelect] = useState(null)
     const [add, setAdd] = useState(false)
+    const [loading, setLoading] = useState(false)
+
     const onSelect = (index, active) => {
         setSelect(data.listAnswer[index])
         setNumbSelect(index)
@@ -231,13 +261,23 @@ function RightContent({ datas, modify, updateQuestion }) {
         setModal(true)
         setAdd(true)
     }
+    const onFileChange = async (event) => {
+        play()
+        const file = await event.target.files[0];
+        if (!file) return
+        setLoading(true)
+        const imageRef = ref(storage, `images/${`${file.name}_${file.name}`}`);
+        const snapshot = await uploadBytes(imageRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        uploadImage(url)
+        setLoading(false)
+    };
     const openModalQuestion = () => {
         play()
         setQuestion(data.question)
         setModalQuestion(true)
     }
     useEffect(() => {
-        console.log(datas);
         setData(datas)
     }, [datas])
     return (
@@ -257,7 +297,16 @@ function RightContent({ datas, modify, updateQuestion }) {
             </Modal>
             {data ?
                 (<div className="quest">
-                    <img src={data.image ? data.image : notImage} alt="Iamge Question" className="quest-image" draggable="false" />
+                    <input id="upload-img" type="file" accept="image/jpeg, image/png" style={{ display: 'none' }} onChange={(e) => onFileChange(e)} />
+                    <div className="quest-image">
+                        <img src={data.image ? data.image : notImage} onClick={() => document.getElementById('upload-img').click()} title="Change image" alt="Iamge Question" draggable="false" style={{ width: '100%', height: '100%' }} />
+                        {loading && <div className="quest-image-load">
+                            <Spinner animation="grow" variant="warning" />
+                            <Spinner animation="grow" variant="danger" />
+                            <Spinner animation="grow" variant="success" />
+                            <Spinner animation="grow" variant="primary" />
+                        </div>}
+                    </div>
                     <p style={{ textAlign: 'left', fontWeight: 'bold' }}>{data.question ? data.question : 'Belum ada soal'}<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16" style={{ marginLeft: '10px', marginTop: '-8px', cursor: 'pointer' }} onClick={openModalQuestion}>
                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg></p>
@@ -286,7 +335,6 @@ function ModalMateri({ materis, action }) {
     const [description, setDescription] = useState(materis.description)
     const onMateri = () => {
         play()
-        const session = getQuestionName()
         const dataSession = {
             description: description,
             materi: materi,
@@ -295,9 +343,6 @@ function ModalMateri({ materis, action }) {
         }
         localStorage.setItem('question-edit', JSON.stringify(dataSession))
         action()
-    }
-    const getQuestionName = () => {
-        return JSON.parse(localStorage.getItem('question-edit'))
     }
     return (
         <>
