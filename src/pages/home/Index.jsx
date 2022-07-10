@@ -28,7 +28,7 @@ import {
   searchMateriUser, selectSchoolRandom, postAdminLogin,
 } from '../../app/fetchApi/connect';
 
-import { storage } from '../../firebase';
+import { storage } from '../../util/firebase';
 
 import Swal from 'sweetalert2';
 import Loading from '../../components/loading/Index';

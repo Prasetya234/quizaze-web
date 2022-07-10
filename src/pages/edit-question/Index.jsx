@@ -13,7 +13,7 @@ import Modal from '../../components/modal/Modal'
 import { setQuestionSession, getAuthorize, getQuestionList } from '../../util/session'
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../firebase';
+import { storage } from '../../util/firebase';
 import { saveQuestion } from '../../service/update-questoin'
 
 export default function Index() {
