@@ -266,7 +266,7 @@ function RightContent({ datas, modify, updateQuestion, uploadImage }) {
         const file = await event.target.files[0];
         if (!file) return
         setLoading(true)
-        const imageRef = ref(storage, `images/${`${file.name}_${file.name}`}`);
+        const imageRef = ref(storage, `images/${`${file.name}_question`}`);
         const snapshot = await uploadBytes(imageRef, file);
         const url = await getDownloadURL(snapshot.ref);
         uploadImage(url)
