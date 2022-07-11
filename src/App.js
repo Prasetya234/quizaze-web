@@ -15,10 +15,12 @@ import Congrats from './pages/congrats/Index'
 import Home from './pages/home/Index';
 import Admin from './pages/admin/Index';
 import Question from './pages/question/Index';
-import Stars from './components/stars/Index';
 import NotFound from './pages/404/Index';
 import EditQuestion from './pages/edit-question/Index'
+import CreateQuestion from './pages/create-question/Index';
+
 import Modal from './components/modal/Modal';
+import Stars from './components/stars/Index';
 
 import { play } from './util/generateMusic';
 
@@ -66,6 +68,7 @@ function App() {
               <Route path="/question/:id" element={<Question />} />
               <Route path="/user-score/:id" element={<Congrats />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/materi-create" element={<CreateQuestion />} />
               <Route path="/materi-update/:id" element={<EditQuestion />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

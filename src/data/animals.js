@@ -35,7 +35,7 @@ const shuffle = (array, array1) => {
   return [array, array1];
 };
 
-const funtRandom = () => {
+const funcRandom = () => {
   let loop = true;
   const res = [];
   const { length } = animals;
@@ -50,4 +50,4 @@ const funtRandom = () => {
   return shuffle(res, res[0]);
 };
 
-export default funtRandom;
+export default funcRandom;

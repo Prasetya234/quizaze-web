@@ -46,6 +46,8 @@ function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
                     )}
                     {!listMateri.length && !isLoading && <p className="not-school">Materi tidak tersedia</p>}
                 </div>
+                <p className="random" onClick={() => { play(); navigator('/materi-create') }}>Buat materi baru</p>
+
             </div>
         </div>
     );
@@ -141,7 +143,7 @@ function LeftContent({ school, fetchAuth }) {
                     <ButtonComponent title="Edit Profile Sekolah" action={onEditProfile} />
                 </div>
                 <div className="button">
-                    <ButtonComponent title="Lihat Materi" action={showMateri} />
+                    <ButtonComponent title="Modifiksi Materi" action={showMateri} />
                 </div>
             </div>
             <p className="id">{school.id}</p>

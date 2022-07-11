@@ -182,9 +182,24 @@ export const setAdminMateri = async (pyload) => {
     return;
   }
   try {
-    res = await axios.put(`${config.api.question}/${pyload.materiId}/admin`, pyload.data, { headers: config.getAuthHeader() }).then(be => be.data.data);
-  } catch {
-    res = null
+    res = await axios.put(`${config.api.question}/${pyload.materiId}/admin`, pyload.data, { headers: config.getAuthHeader() }).then(be => be.data);
+  } catch (error) {
+    res = error.response.data
+  } finally {
+    return res;
+  }
+};
+
+export const createAdminMateri = async (pyload) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.post(`${config.api.question}/${pyload.schoolId}/admin`, pyload.data, { headers: config.getAuthHeader() }).then(be => be.data);
+  } catch (error) {
+    res = error.response.data
   } finally {
     return res;
   }

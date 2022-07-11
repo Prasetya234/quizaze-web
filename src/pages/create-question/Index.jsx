@@ -1,23 +1,21 @@
-import './index.scss'
 
 import Swal from "sweetalert2"
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Spinner } from 'react-bootstrap'
 
 import { play } from '../../util/generateMusic'
-import { getApi, getAdminMateri } from '../../app/fetchApi/connect'
+import { getApi } from '../../app/fetchApi/connect'
 import LoadingGalaxy from '../../components/load-galaxy/Index'
 import notImage from '../../assets/icon/not-image.png'
 import Modal from '../../components/modal/Modal'
-import { setQuestionSession, getAuthorize, getQuestionList } from '../../util/session'
+import { setQuestionSession, getAuthorize, getQuestionList, createQuestionList } from '../../util/session'
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../util/firebase';
 import { saveQuestion } from '../../service/modifier-questoin'
 
 export default function Index() {
-    const { id } = useParams()
     const [schoolId, setSchoolId] = useState("")
     const [numbSelect, setNumbSelect] = useState(null)
     const [modalMateri, setModalMateri] = useState(false)
@@ -48,13 +46,13 @@ export default function Index() {
         setLoading(true)
         const datauser = getAuthorize();
         setSchoolId(datauser.user.school.id)
-        await getApi(datauser.user.id)
+        const auth = await getApi(datauser.user.id)
+        if (!auth.user.roles.find((item) => item === 'ADMIN_SCHOOL' || item === 'ADMIN')) {
+            navigator('/not-found')
+            return
+        }
         if (!getQuestionList()) {
-            const res = await getAdminMateri(id);
-            if (!res) {
-                navigator("/not-found")
-                return
-            }
+            const res = createQuestionList();
             setQuestionSession(res)
         }
         settingDataQuestion()
@@ -133,8 +131,8 @@ export default function Index() {
         if (!confirm.isConfirmed) return
         play()
         setLoading(true)
-        const res = await saveQuestion(id, 'EDIT')
-        if (res.response.data.message === 'NOT_FOUND') {
+        const res = await saveQuestion(getAuthorize().user.school.id, 'CREATE')
+        if (res.status === '404') {
             await Swal.fire({
                 icon: 'error',
                 text: 'Sepertinya ada soal yang belum di isi jawaban benarnya',
@@ -142,7 +140,7 @@ export default function Index() {
             setLoading(false)
             return
         }
-        if (!res.response.data.data) {
+        if (res.status !== '200') {
             await Swal.fire({
                 icon: 'error',
                 text: 'Seperti nya ada yang salah. Restart ulang Soal kamu ya',
