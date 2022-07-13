@@ -95,8 +95,8 @@ function AbautMe() {
           <img src={react} alt="react" />
         </div>
       </div>
-      <p style={{ fontWeight: 'bold', marginBottom: '0px', fontSize: '20px' }}>Tujuan :</p>
-      <p>Quizaze adalah website yang menyediakan soal yang menarik untuk kamu yang cepat bosan dalam mengerjakan tugas-tugas sekolah</p>
+      <p style={{ fontWeight: 'bold', marginBottom: '0px', fontSize: '20px' }}>Abaut:</p>
+      <p>Quizaze adalah website yang menyediakan soal dengan tampilan yang menarik untuk kamu yang cepat bosan dalam mengerjakan tugas-tugas sekolah</p>
       <p style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '20px' }}>Developer</p>
       <p>
         <span onClick={() => window.open('https://www.instagram.com/xzy_prasetya/')}>Prasetya Dhany Putra</span>
