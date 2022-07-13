@@ -188,9 +188,11 @@ function Index() {
   const onSelectSchool = async (e) => {
     play();
     const res = await updateUserSchool(e);
-    setLoading(false);
-    if (!res) return;
-    fetchUserAuth();
+    if (!res) {
+      setLoading(false);
+      return;
+    }
+    await fetchUserAuth();
     setModalActive(false);
     if (changeSchool) {
       setChangeSchool(false);
@@ -199,6 +201,7 @@ function Index() {
       findMateriByInput()
       setModalMateri(true);
     }
+    setLoading(false);
   };
   const onEditProfile = () => {
     play();
