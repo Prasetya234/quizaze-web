@@ -12,7 +12,7 @@ import { play } from '../../util/generateMusic';
 function Index() {
     const { id } = useParams()
     const navigator = useNavigate()
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [scoreUser, setScoreUser] = useState({ materi: { materi: '' }, score: 0, totalQuestionAnswer: 0, user: { username: '' } });
     const stopBrowserBack = () => {
         window.history.pushState(null, "", window.location.href);
@@ -55,7 +55,7 @@ function Index() {
                         <img src={img3} alt="logo" className="image2" draggable="false" />
                     </div>
                     <div className="message-answer">
-                        <p>Selamat, <b>{scoreUser.user.username}</b>. Kamu telah menyelesaikan soal {scoreUser.materi.materi} dengan kamu menjawab soal sebanyak {scoreUser.totalQuestionAnswer}. Nilai kamu adalah <b style={{ color: scoreUser.score >= 65 ? 'blue' : 'red' }}>{scoreUser.score + 1}</b>. <br /> <span id="content">Terima kasih telah menyelesaikan soal ini</span></p>
+                        <p>Selamat, <b>{scoreUser.user.username}</b>. Kamu telah menyelesaikan soal {scoreUser.materi.materi} dengan kamu menjawab soal sebanyak {scoreUser.totalQuestionAnswer}. Nilai kamu adalah <b style={{ color: scoreUser.score >= 60 ? 'blue' : 'red' }}>{scoreUser.score}</b>. <br /> <span id="content">Terima kasih telah menyelesaikan soal ini</span></p>
                         <div className="button" id="content">
                             <Button title="Kembali ke beranda" action={() => { play(); navigator('/') }} />
                         </div>

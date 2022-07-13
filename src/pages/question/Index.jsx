@@ -182,7 +182,7 @@ function Index() {
                             <div className="box-content">
                                 {question.listAnswer.map((e, i) => (
                                     <div className="box-content-answer" key={i} onClick={() => selectAnswer(i)}>
-                                        <p style={{ backgroundColor: activeSelect === i ? 'blue' : '' }}>{e}</p>
+                                        <span style={{ backgroundColor: activeSelect === i ? 'blue' : '' }}>{e}</span>
                                     </div>
                                 ))}
                             </div>

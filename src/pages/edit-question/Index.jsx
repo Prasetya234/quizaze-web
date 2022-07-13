@@ -47,8 +47,13 @@ export default function Index() {
     const onGetDataQustion = async () => {
         setLoading(true)
         const datauser = getAuthorize();
+        const auth = await getApi(datauser.user.id)
+        if (!auth.user.roles.find((item) => item === 'ADMIN_SCHOOL' || item === 'ADMIN')) {
+            navigator('/not-found')
+            return
+        }
         setSchoolId(datauser.user.school.id)
-        await getApi(datauser.user.id)
+
         if (!getQuestionList()) {
             const res = await getAdminMateri(id);
             if (!res) {

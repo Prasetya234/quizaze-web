@@ -45,12 +45,12 @@ export default function Index() {
     const onGetDataQustion = async () => {
         setLoading(true)
         const datauser = getAuthorize();
-        setSchoolId(datauser.user.school.id)
         const auth = await getApi(datauser.user.id)
         if (!auth.user.roles.find((item) => item === 'ADMIN_SCHOOL' || item === 'ADMIN')) {
             navigator('/not-found')
             return
         }
+        setSchoolId(datauser.user.school.id)
         if (!getQuestionList()) {
             const res = createQuestionList();
             setQuestionSession(res)

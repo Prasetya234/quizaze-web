@@ -170,9 +170,11 @@ function Index() {
     play();
     setLoading(true);
     const res = await selectSchoolRandom();
-    setLoading(false);
-    if (!res) return;
-    fetchUserAuth()
+    if (!res) {
+      setLoading(false);
+      return;
+    }
+    await fetchUserAuth()
     setModalActive(false);
     if (changeSchool) {
       setChangeSchool(false);
@@ -181,6 +183,7 @@ function Index() {
       findMateriByInput()
       setModalMateri(true);
     }
+    setLoading(false);
   };
   const onSelectSchool = async (e) => {
     play();
