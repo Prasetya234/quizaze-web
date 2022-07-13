@@ -139,7 +139,7 @@ export default function Index() {
         play()
         setLoading(true)
         const res = await saveQuestion(id, 'EDIT')
-        if (res.response.data.message === 'NOT_FOUND') {
+        if (res.status === '404') {
             await Swal.fire({
                 icon: 'error',
                 text: 'Sepertinya ada soal yang belum di isi jawaban benarnya',
@@ -147,7 +147,7 @@ export default function Index() {
             setLoading(false)
             return
         }
-        if (!res.response.data.data) {
+        if (res.status !== '200') {
             await Swal.fire({
                 icon: 'error',
                 text: 'Seperti nya ada yang salah. Restart ulang Soal kamu ya',
@@ -189,6 +189,9 @@ export default function Index() {
                             <div className="info-materi-content">
                                 <p>Question total</p>
                                 <p style={{ fontWeight: 'bold', fontSize: '24px', marginTop: '10px' }}>{questions.length}</p>
+                                {questionSelect &&
+                                    questionSelect.image && <button style={{ width: '160px' }} onClick={() => onChaneImageQuestion('')}>Hapus Gambar</button>
+                                }
                                 <button title="tambah pertanyaan" onClick={addQuestionUser}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
                                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
