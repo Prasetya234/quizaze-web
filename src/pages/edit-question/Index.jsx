@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Spinner } from 'react-bootstrap'
 
 import { play } from '../../util/generateMusic'
-import { getApi, getAdminMateri } from '../../app/fetchApi/connect'
+import { getApi, getAdminMateri, deleteAdminMateri } from '../../app/fetchApi/connect'
 import LoadingGalaxy from '../../components/load-galaxy/Index'
 import notImage from '../../assets/icon/not-image.png'
 import Modal from '../../components/modal/Modal'
@@ -164,6 +164,27 @@ export default function Index() {
         }
         setLoading(false)
     }
+    const onDeleteMateri = async () => {
+        play()
+        const dialog = await Swal.fire({
+            title: 'Yakin ingin menghapus materi ini?',
+            text: 'Data akan secara permanen di hapusdan tidak bisa di kembalikan',
+            icon: 'question',
+            showCancelButton: true,
+            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Iya, Aku Delete'
+        })
+        if (!dialog.isConfirmed) return
+        setLoading(true)
+        const res = await deleteAdminMateri(id)
+        if (!res) {
+            setLoading(false)
+            return
+        }
+        navigator("/admin")
+        setLoading(false)
+    }
     useEffect(() => {
         selectNumberQuestion(numbSelect < questions.length ? numbSelect : numbSelect - 1)
     }, [questions])
@@ -200,6 +221,9 @@ export default function Index() {
                                 </button>
                                 <button onClick={onSaveQuestionUpdated}>
                                     Simpan
+                                </button>
+                                <button style={{ backgroundColor: 'red' }} onClick={onDeleteMateri}>
+                                    Hapus Materi
                                 </button>
                             </div>
                         </div>

@@ -205,6 +205,21 @@ export const createAdminMateri = async (pyload) => {
   }
 };
 
+export const deleteAdminMateri = async (materiId) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.delete(`${config.api.question}/${materiId}/admin`, { headers: config.getAuthHeader() }).then(be => be.data);
+  } catch (error) {
+    res = error.response.data
+  } finally {
+    return res;
+  }
+};
+
 const offline = async () => {
   await Swal.fire(
     'Offline',
