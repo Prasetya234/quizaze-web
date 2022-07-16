@@ -402,19 +402,8 @@ function Index() {
               )
           }
         </div>
-        <div>
-          <OverlayTrigger
-            placement="left"
-            overlay={(
-              <Tooltip id="tooltipleft">
-                Profile
-                {' '}
-                {profile.username}
-              </Tooltip>
-            )}
-          >
-            <img src={profile.avatar ? profile.avatar : imageCharacter(profile.username)} alt="Profile" className="profile" onClick={funcSetModalProfileActive} />
-          </OverlayTrigger>
+        <div >
+          <img src={profile.avatar ? profile.avatar : imageCharacter(profile.username)} alt="Profile" className="profile" onClick={funcSetModalProfileActive} title={'Profile ' + profile.username} />
         </div>
       </div>
       <div className="App-content">
