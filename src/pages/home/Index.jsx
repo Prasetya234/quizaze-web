@@ -37,6 +37,7 @@ import Modal from '../../components/modal/Modal';
 
 import './index.scss';
 import { convertBase64 } from '../../util/convertBase64';
+import { Helmet } from 'react-helmet'
 
 function Index() {
   const navigator = useNavigate();
@@ -278,6 +279,10 @@ function Index() {
       }}
       id="music"
     >
+      <Helmet>
+        <title>Quizaze Application</title>
+        <meta name="description" content="Quizaze adalah website yang menyediakan quiz dengan gaya yang menyenangkan" />
+      </Helmet>
       {loading && <Loading />}
       <Music played={isPlayed} />
       <Modal title="Pilih materi untuk memulai quiz" close={() => { play(); setModalMateri(false); }} active={modalMateri}>
