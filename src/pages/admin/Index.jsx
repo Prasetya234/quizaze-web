@@ -12,6 +12,7 @@ import LineGraph from "../../components/diagram/LineGraph";
 import LoadingGalaxy from '../../components/load-galaxy/Index';
 import Modal from '../../components/modal/Modal';
 import ButtonComponent from '../../components/button/Index'
+import { Helmet } from "react-helmet";
 
 function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
     const navigator = useNavigate();
@@ -96,6 +97,9 @@ function LeftContent({ school, fetchAuth }) {
     return (
         <div className="konten-left">
             <Modal title="Pilih materi" close={() => { play(); setModalMateri(false); }} active={modalMateri}>
+                <Helmet>
+                    <title>List Materi</title>
+                </Helmet>
                 <MateriSelect
                     findMateriByInput={findMateriByInput}
                     listMateri={listMateri}
@@ -103,11 +107,15 @@ function LeftContent({ school, fetchAuth }) {
                 />
             </Modal>
             <Modal title="Edit Profile Sekolah" close={() => { play(); setModalActive(false) }} active={modalActive} height="380px">
+                <Helmet>
+                    <title>Edit Profile Sekolah</title>
+                </Helmet>
                 {isLoading ? (
                     <div style={{
                         top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)',
                     }}
                     >
+
                         <Spinner animation="border" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </Spinner>
@@ -251,9 +259,12 @@ function Index() {
     return (
         <>
             {isLoading ? <LoadingGalaxy /> : (<div className="admin-page">
+                <Helmet>
+                    <title>Admin Page</title>
+                </Helmet>
                 <div className="admin-page-head">
                     <button onClick={logOut}>Logout</button>
-                    <p><b>{school.name ? school.name : 'Null'}</b></p>
+                    <p><b>{school.name ? school.name : 'Nama Sekolah tidak di temukan'}</b></p>
                     <p>{new Date().toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
                 <div className="konten">

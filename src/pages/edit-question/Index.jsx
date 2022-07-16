@@ -12,6 +12,7 @@ import notImage from '../../assets/icon/not-image.png'
 import Modal from '../../components/modal/Modal'
 import { setQuestionSession, getAuthorize, getQuestionList } from '../../util/session'
 
+import { Helmet } from 'react-helmet'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../util/firebase';
 import { saveQuestion } from '../../service/modifier-questoin'
@@ -331,6 +332,9 @@ function RightContent({ datas, modify, updateQuestion, uploadImage }) {
     }, [datas])
     return (
         <div className="update-right" >
+            <Helmet>
+                <title>Edit materi</title>
+            </Helmet>
             <Modal title="Pilihan ganda" close={() => { play(); setModal(false) }} active={modal} height="200px">
                 <input type="text" placeholder="Nama Materi" autoFocus value={select} onChange={(e) => setSelect(e.target.value)} />
                 <div className="profile-modal-id">

@@ -11,6 +11,7 @@ import notImage from '../../assets/icon/not-image.png'
 import Modal from '../../components/modal/Modal'
 import { setQuestionSession, getAuthorize, getQuestionList, createQuestionList } from '../../util/session'
 
+import { Helmet } from 'react-helmet'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../util/firebase';
 import { saveQuestion } from '../../service/modifier-questoin'
@@ -169,6 +170,9 @@ export default function Index() {
         <>
             {loading ? <LoadingGalaxy /> : (
                 <div className="box">
+                    <Helmet>
+                        <title>Create Materi</title>
+                    </Helmet>
                     <Modal title="Edit judul materi" close={() => { play(); setModalMateri(false) }} active={modalMateri} height="400px">
                         <ModalMateri materis={materi} action={() => { setModalMateri(false); settingDataQuestion() }} />
                     </Modal>
