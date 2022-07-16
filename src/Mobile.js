@@ -1,5 +1,4 @@
 import React from 'react'
-import backgound from './assets/bg.jpg'
 
 export default function Mobile() {
     return (

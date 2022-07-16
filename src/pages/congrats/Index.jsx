@@ -36,6 +36,7 @@ function Index() {
     useEffect(() => {
         stopBrowserBack()
         fetchUserScore()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <>

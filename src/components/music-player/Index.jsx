@@ -1,22 +1,11 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useRef, useEffect } from "react"
 import music from "../../assets/audio/holiday-is-coming-11852.mp3"
 
 const Index = ({ played }) => {
     const audioEl = useRef(null);
     let audioPlayer, timeOut;
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [isPlayed, setIsPlayed] = useState(false);
     const initializPlayer = () => {
         audioPlayer = audioEl.current
-        audioPlayer.addEventListener("loadeddata", () => {
-            setIsLoaded(true);
-        });
-        audioPlayer.addEventListener("play", () => {
-            setIsPlayed(true);
-        });
-        audioPlayer.addEventListener("pause", () => {
-            setIsPlayed(false);
-        });
         stopOpPlay()
     }
     const stopOpPlay = async () => {
@@ -41,6 +30,7 @@ const Index = ({ played }) => {
     }
     useEffect(() => {
         initializPlayer()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [played])
     return (
         <audio

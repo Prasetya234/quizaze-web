@@ -187,9 +187,11 @@ export default function Index() {
     }
     useEffect(() => {
         selectNumberQuestion(numbSelect < questions.length ? numbSelect : numbSelect - 1)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [questions])
     useEffect(() => {
         onGetDataQustion()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <>
@@ -325,6 +327,7 @@ function RightContent({ datas, modify, updateQuestion, uploadImage }) {
     }
     useEffect(() => {
         setData(datas)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datas])
     return (
         <div className="update-right" >

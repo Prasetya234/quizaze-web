@@ -3,9 +3,9 @@ import "./index.scss"
 
 const Modal = (props) => {
   const [active, setActive] = useState(false)
-  const [render, setRender] = useState(0)
   useEffect(() => {
     setActive(props.active)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.active])
   return (
     <>{active ? (

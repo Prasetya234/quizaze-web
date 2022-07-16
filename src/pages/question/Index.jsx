@@ -158,6 +158,7 @@ function Index() {
         } else {
             onGetQuestion()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <div className="leads">
