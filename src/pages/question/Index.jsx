@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import LoadingGalaxy from '../../components/load-galaxy/Index';
 import { useDispatch } from 'react-redux';
 import { setProfile } from '../../app/feature/connectSlice';
-import { questionMateriUser, getApi, answerQuestionUser } from '../../app/fetchApi/connect';
+import { questionMateriUser, getApi, answerQuestionUser, getSchoolById, updateUserSchool } from '../../app/fetchApi/connect';
 import { useNavigate, useParams } from 'react-router-dom';
 import { play, endAnswer, playAnswerTrue, playAnswerFalse } from '../../util/generateMusic';
 import { Helmet } from 'react-helmet';
@@ -35,6 +35,13 @@ function Index() {
         questionTotal: 0,
         question: []
     });
+    const [school, setSchool] = useState({
+        headMaster: "",
+        id: "",
+        name: "",
+        phoneNumber: "",
+        address: "",
+    })
     const [loadQuestion, setLoadQuestion] = useState(false);
     const fetchUserAuth = async () => {
         const datauser = JSON.parse(localStorage.getItem('auth'));
@@ -46,15 +53,52 @@ function Index() {
         play()
         setActiveSelect(idx)
     };
+    const fetchCheckingUserSchool = async (id) => {
+        const school = JSON.parse(localStorage.getItem('auth'));
+        const dat = school.user.school
+        if (dat && dat.id === id) {
+            return
+        }
+        setLoadQuestion(true);
+        const data = await getSchoolById(id);
+        if (!data) {
+            setLoadQuestion(false);
+            navigate('/not-found')
+            return
+        }
+        setSchool(data)
+        const res = await Swal.fire({
+            title: `Soal ini berbeda dengan sekolah yang kamu pakai`,
+            text: `Ganti ke sekolah ${school.name} dan mulai mengerjakan soal`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Tidak, tetap pakai sekolah lama',
+            confirmButtonText: 'Iya, Ganti ke sekolah ini'
+        })
+        if (!res.isConfirmed) {
+            navigate('/not-found')
+            return
+        }
+        await updateUserSchool(id)
+        window.location.reload();
+    }
     const fetchQuestionUser = async () => {
         setLoadQuestion(true);
         await fetchUserAuth();
         const res = await questionMateriUser(id);
         setLoadQuestion(false);
+        const query = window.location.search;
+        const param = new URLSearchParams(query).get("school");
+        if (!res && param) {
+            await fetchCheckingUserSchool(param);
+            return
+        };
         if (!res) {
             navigate("/not-found")
             return
-        };
+        }
         localStorage.setItem('question-now', JSON.stringify(res))
         localStorage.setItem('num', 0)
         onGetQuestion()
@@ -190,7 +234,7 @@ function Index() {
                             <div className="box-content">
                                 {question.listAnswer.map((e, i) => (
                                     <div className="box-content-answer" key={i} onClick={() => selectAnswer(i)}>
-                                        <span style={{ backgroundColor: activeSelect === i ? 'blue' : '' }}>{e}</span>
+                                        <span style={{ backgroundColor: activeSelect === i ? 'blue' : '' }} title={e}>{e}</span>
                                     </div>
                                 ))}
                             </div>

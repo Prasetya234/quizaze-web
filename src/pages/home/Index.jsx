@@ -9,7 +9,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import {
-  Button, OverlayTrigger, Tooltip, Spinner, Form, InputGroup, Alert
+  Button, Spinner, Form, InputGroup, Alert
 } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';

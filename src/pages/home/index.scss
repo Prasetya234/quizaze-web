@@ -122,11 +122,18 @@
   text-align: center;
   margin-top: 90px;
 }
+.shere-icon {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: black;
+}
 .daftar-school {
   font-size: 18px;
   color: rgb(212, 206, 206);
   margin: 8px 0px;
   padding: 15px;
+  position: relative;
   line-height: 10px;
   border-radius: 10px;
   background-color: rgb(158, 143, 143);

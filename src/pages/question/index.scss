@@ -49,6 +49,9 @@
       justify-content: center;
       span {
         cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         padding: 10px 15px;
         border-radius: 16px;
         width: 80%;

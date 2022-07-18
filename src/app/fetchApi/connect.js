@@ -220,6 +220,19 @@ export const deleteAdminMateri = async (materiId) => {
   }
 };
 
+export const getSchoolById = async (id) => {
+  let res = null;
+  if (!navigator.onLine) {
+    await offline();
+    return;
+  }
+  try {
+    res = await axios.get(`${config.api.school}/school/${id}`, { headers: config.getAuthHeader() }).then(be => be.data.data);
+  } finally {
+    return res;
+  }
+};
+
 const offline = async () => {
   await Swal.fire(
     'Offline',

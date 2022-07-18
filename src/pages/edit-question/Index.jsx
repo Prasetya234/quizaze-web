@@ -186,6 +186,21 @@ export default function Index() {
         navigator("/admin")
         setLoading(false)
     }
+    const onCopyQuestion = () => {
+        play()
+        const data = getAuthorize();
+        var input = document.createElement('textarea');
+        input.innerHTML = `https://quizaze-application.vercel.app/question/${id}?school=${data.user.school.id}`;
+        document.body.appendChild(input);
+        input.select();
+        var result = document.execCommand('copy');
+        document.body.removeChild(input);
+        Swal.fire(
+            '',
+            'Link telah di simpan di clipboard',
+            'success'
+        )
+    }
     useEffect(() => {
         selectNumberQuestion(numbSelect < questions.length ? numbSelect : numbSelect - 1)
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -227,6 +242,9 @@ export default function Index() {
                                 </button>
                                 <button style={{ backgroundColor: 'red' }} onClick={onDeleteMateri}>
                                     Hapus Materi
+                                </button>
+                                <button onClick={onCopyQuestion}>
+                                    Copy Link Question
                                 </button>
                             </div>
                         </div>

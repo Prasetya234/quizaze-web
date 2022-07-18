@@ -14,6 +14,8 @@ import Modal from '../../components/modal/Modal';
 import ButtonComponent from '../../components/button/Index'
 import { Helmet } from "react-helmet";
 
+
+
 function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
     const navigator = useNavigate();
     const onSelectMateri = async (item) => {
@@ -27,6 +29,7 @@ function MateriSelect({ isLoading, findMateriByInput, listMateri }) {
                 <div className="school-modal-list_school">
                     {listMateri.map((e, i) => (
                         <div className="daftar-school" key={i} onClick={() => onSelectMateri(e)}>
+
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <p><b>{e.materi}</b></p>
                                 {e.alreadyAnswer ? (<p style={{ color: 'black' }}>Sudah menjawab</p>) : (<p>
