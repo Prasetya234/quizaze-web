@@ -1,6 +1,0 @@
-flow: 
-    - checking connection 
-    - show question
-    - all question submited done, show home page 
-    - profile
-    - Admin page
