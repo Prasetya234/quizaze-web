@@ -190,7 +190,7 @@ export default function Index() {
         play()
         const data = getAuthorize();
         var input = document.createElement('textarea');
-        input.innerHTML = `${window.location.href}question/${id}?school=${data.user.school.id}`;
+        input.innerHTML = `${window.location.origin}/question/${id}?school=${data.user.school.id}`;
         document.body.appendChild(input);
         input.select();
         document.execCommand('copy');

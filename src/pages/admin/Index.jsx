@@ -13,6 +13,7 @@ import LoadingGalaxy from '../../components/load-galaxy/Index';
 import Modal from '../../components/modal/Modal';
 import ButtonComponent from '../../components/button/Index'
 import { Helmet } from "react-helmet";
+import { getQuestionList } from "../../util/session";
 
 
 
@@ -241,16 +242,16 @@ function Index() {
         navigator('/')
     }
     const goBackQuestionEdited = async () => {
-        const res = JSON.parse(localStorage.getItem('question-edit'))
+        const res = getQuestionList()
         if (!res) return
         const confirm = await Swal.fire({
             showCancelButton: true,
             confirmButtonText: 'Lanjutin',
-            text: `Sepertinya kamu masih melakukan perubahan di materi ${res.materi}. Mau di lanjutkan?`,
+            text: `Sepertinya kamu masih melakukan perubahan di materi ${res.materi}. Mau melanjutkan lanjutkan?`,
             icon: 'info'
         })
         if (!confirm.isConfirmed) {
-            localStorage.removeItem('question-edit')
+            localStorage.removeItem('question-modifier')
             return
         }
         navigator(`/materi-update/${res.id}`)
