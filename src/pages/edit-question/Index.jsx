@@ -190,10 +190,10 @@ export default function Index() {
         play()
         const data = getAuthorize();
         var input = document.createElement('textarea');
-        input.innerHTML = `https://quizaze-application.vercel.app/question/${id}?school=${data.user.school.id}`;
+        input.innerHTML = `${window.location.href}question/${id}?school=${data.user.school.id}`;
         document.body.appendChild(input);
         input.select();
-        var result = document.execCommand('copy');
+        document.execCommand('copy');
         document.body.removeChild(input);
         Swal.fire(
             '',

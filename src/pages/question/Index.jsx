@@ -35,13 +35,6 @@ function Index() {
         questionTotal: 0,
         question: []
     });
-    const [school, setSchool] = useState({
-        headMaster: "",
-        id: "",
-        name: "",
-        phoneNumber: "",
-        address: "",
-    })
     const [loadQuestion, setLoadQuestion] = useState(false);
     const fetchUserAuth = async () => {
         const datauser = JSON.parse(localStorage.getItem('auth'));
@@ -66,7 +59,6 @@ function Index() {
             navigate('/not-found')
             return
         }
-        setSchool(data)
         const res = await Swal.fire({
             title: `Soal ini berbeda dengan sekolah yang kamu pakai`,
             text: `Ganti ke sekolah ${school.name} dan mulai mengerjakan soal`,
