@@ -82,11 +82,14 @@ function App() {
             </Routes>
           </BrowserRouter>
         </header>
-        {/* <div className="copyright" onClick={() => { play(); setModalAbout(true); }} id="content">
-          &copy;Copyright
-          {new Date().getFullYear()}
-        </div> */}
-        <div className="copyright">
+        <div
+          className="copyright"
+          onClick={() => {
+            play()
+            setModalAbout(true)
+          }}
+          id="content"
+        >
           &copy;Copyright
           {new Date().getFullYear()}
         </div>
